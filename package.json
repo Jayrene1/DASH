@@ -1,0 +1,33 @@
+{
+  "name": "dash",
+  "version": "1.0.0",
+  "description": "An html dashboard service for displaying data in modular and customizable formats",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jayrene1/Project-2.git"
+  },
+  "keywords": [
+    "dashboard",
+    "graphs",
+    "finance",
+    "express",
+    "d3.js"
+  ],
+  "author": "The Boondock Stacks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jayrene1/Project-2/issues"
+  },
+  "homepage": "https://github.com/Jayrene1/Project-2#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.2",
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.5",
+    "sequelize": "^4.42.1"
+  }
+}
