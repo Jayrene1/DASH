@@ -8,19 +8,16 @@ module.exports = function(app) {
 
   // Each of the below routes just handles the HTML page that the user gets sent to.
 
-  // index route loads view.html
-  app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "../views/index.handlebars"));
+  //handlebars routing 
+  app.get('/', (req, res) => {
+    res.render('index', { title: 'Home Page' });
   });
 
-  // cms route loads cms.html
-  app.get("/dash", function(req, res) {
-    res.sendFile(path.join(__dirname, "../views/dashboard.handlebars"));
+  app.get('/createdash', (req, res) => {
+  res.render('createdash', { title: 'Create Dash' });
   });
 
-  // blog route loads blog.html
-  app.get("/make", function(req, res) {
-    res.sendFile(path.join(__dirname, "../views/createdash.handlebars"));
+  app.get('/dashboard', (req, res) => {
+  res.render('dashboard', { title: 'Dashboard' });
   });
-
 }; 
