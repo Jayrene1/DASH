@@ -1,1 +1,0 @@
-// sequelize model of dashboards table HERE

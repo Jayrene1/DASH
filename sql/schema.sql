@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS dash_db;
 CREATE DATABASE dash_db;
 USE dash_db;
-CREATE TABLE sample (
+CREATE TABLE samples (
     `Segment` VARCHAR(16) CHARACTER SET utf8,
     `Country` VARCHAR(24) CHARACTER SET utf8,
     `Product` VARCHAR(9) CHARACTER SET utf8,
