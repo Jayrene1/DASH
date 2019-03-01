@@ -4,7 +4,8 @@
   "description": "An html dashboard service for displaying data in modular and customizable formats",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -29,5 +30,6 @@
     "mysql": "^2.16.0",
     "mysql2": "^1.6.5",
     "sequelize": "^4.42.1"
-  }
+  },
+  "devDependencies": {}
 }
