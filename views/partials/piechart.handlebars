@@ -1,0 +1,23 @@
+<p>piechart file</p>
+
+<div id="pie"></div>
+
+<script>
+    $(document).ready(function() {
+        createPieChart(
+            [
+                {type: "Pizza", amnt: 45},
+                {type: "Lasagna", amnt: 25},
+                {type: "Spaghetti", amnt: 25},
+                {type: "Spinach", amnt: 5}
+            ],
+            {
+                radius: 160,
+                width: 375,
+                height: 375,
+                colors: ['cc0033', 'a30052', 'cc0066', '9900cc', 'ff00cc', '993366'],
+                el: "#pie"
+            }
+        );
+    });
+</script>
