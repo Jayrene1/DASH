@@ -13,10 +13,8 @@ module.exports = function(app) {
           res.json(err);
       });
     });
-  };
-  
     // Get route for retrieving a single post
-    app.get("/api/samples/:id", function(req, res) {
+    app.get("/api/sample/:id", function(req, res) {
       // 2. Add a join here to include the Author who wrote the Post
       db.sample.findOne({
         where: {
@@ -29,9 +27,9 @@ module.exports = function(app) {
     });
 
     // Get route for retrieving a single post
-    app.get("/api/samples/:Country", function(req, res) {
+    app.get("/api/sample/country/:country", function(req, res) {
       // 2. Add a join here to include the Author who wrote the Post
-      db.sample.findOne({
+      db.sample.findAll({
         where: {
           country: req.params.country
         }
@@ -42,9 +40,9 @@ module.exports = function(app) {
     });
 
     // Get route for retrieving a single post
-    app.get("/api/samples/:Sector", function(req, res) {
+    app.get("/api/sample/sector/:sector", function(req, res) {
       // 2. Add a join here to include the Author who wrote the Post
-      db.sample.findOne({
+      db.sample.findAll({
         where: {
           sector: req.params.sector
         }
@@ -54,9 +52,9 @@ module.exports = function(app) {
       });
     });
     // Get route for retrieving a single post
-    app.get("/api/samples/:Product", function(req, res) {
+    app.get("/api/sample/product/:product", function(req, res) {
       // 2. Add a join here to include the Author who wrote the Post
-      db.sample.findOne({
+      db.sample.findAll({
         where: {
           product: req.params.product
         }
@@ -65,3 +63,6 @@ module.exports = function(app) {
         res.json(result);
       });
     });
+  };
+  
+    
