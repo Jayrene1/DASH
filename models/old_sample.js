@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-    var Sample = sequelize.define("Sample", {
+    return sequelize.define("sample", {
       Segment: {
         type: DataTypes.STRING(16)
       },
@@ -49,7 +49,5 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.INTEGER
       },
     });
-  
-    return Sample;
   };
   
