@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS dash_db;
 CREATE DATABASE dash_db;
 USE dash_db;
 CREATE TABLE samples (
+    `id` INT NOT NULL AUTO_INCREMENT,
     `Segment` VARCHAR(16) CHARACTER SET utf8,
     `Country` VARCHAR(24) CHARACTER SET utf8,
     `Product` VARCHAR(9) CHARACTER SET utf8,
@@ -17,5 +18,8 @@ CREATE TABLE samples (
     `Date` DATETIME,
     `Month_Number` INT,
     `Month_Name` VARCHAR(9) CHARACTER SET utf8,
-    `Year` INT
+    `Year` INT,
+    `CreatedAt` INT,
+    `UpdatedAt` INT,
+     PRIMARY KEY (id)
 );
