@@ -1,0 +1,48 @@
+<p>barchart file</p>
+
+<div id="bar"></div>
+
+<script>
+    $(document).ready(function() {
+        createBarChart(
+            [
+                {
+                    "date": "8-May-12",
+                    "value": 76.86
+                },
+                {
+                    "date": "1-May-12",
+                    "value": 58.13
+                },
+                {
+                    "date": "25-Apr-12",
+                    "value": 99
+                },
+                {
+                    "date": "19-Apr-12",
+                    "value": 85.44
+                },
+                {
+                    "date": "13-Apr-12",
+                    "value": 65.23
+                },
+                {
+                    "date": "9-Apr-12",
+                    "value": 66.23
+                },
+                {
+                    "date": "2-Apr-12",
+                    "value": 61.63
+                }
+            ],
+            {
+                margin: {top: 30, right: 20, bottom: 30, left: 50},
+                width: 400 - margin.left - margin.right,
+                height: 400 - margin.top - margin.bottom,
+                timeSeries: false,
+                yDataVal: "$",
+                el: "#bar"
+            }
+        ); 
+    });
+</script>

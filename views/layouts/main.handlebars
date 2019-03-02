@@ -7,6 +7,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> {{ title }} </title>
+            <style> /* set the CSS */
+            body { font: 12px Arial;}
+
+            path { 
+                stroke: steelblue;
+                stroke-width: 4;
+                fill: none;
+            }
+
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: grey;
+                stroke-width: 2.5;
+                shape-rendering: crispEdges;
+            }
+        </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="/js/d3linechart.js"></script>
+    <script src="/js/d3donutchart.js"></script>
+    <script src="/js/d3barchart.js"></script>
+    <script src="/js/d3piechart.js"></script>
 </head>
 <body>
     {{{ body }}}

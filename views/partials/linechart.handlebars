@@ -1,0 +1,39 @@
+<p>linechart file</p>
+
+<div id="line"></div>
+
+<script>
+    $(document).ready(function() {
+        createLineChart(
+            [
+                {
+                    "xprop": "13-Apr-12",
+                    "yprop": 65.23
+                },
+                {
+                    "xprop": "12-Apr-12",
+                    "yprop": 62.77
+                },
+                {
+                    "xprop": "11-Apr-12",
+                    "yprop": 66.2
+                },
+                {
+                    "xprop": "10-Apr-12",
+                    "yprop": 68.44
+                },
+                {
+                    "xprop": "9-Apr-12",
+                    "yprop": 66.23
+                }
+            ],
+            {
+                margin: {top: 30, right: 20, bottom: 30, left: 50},
+                width: 375,
+                height: 375,
+                timeSeries: true,
+                el: "#line"
+            }
+        );
+    });
+</script>
