@@ -1,6 +1,7 @@
 // TEST API CALL
 function getSampleData() {
-    $.get("api/sample", function(data) {
+    $.get("api/sample",
+     function(data) {
         console.log(data);
     });
 }
