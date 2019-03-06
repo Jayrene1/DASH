@@ -26,6 +26,10 @@ gulp.task('watch', function() {
   gulp.watch(Paths.SCSS, ['compile-scss']);
 });
 
+gulp.task('serve', function() {
+  gulp.watch(Paths.SCSS, ['compile-scss']);
+});
+
 gulp.task('open', function() {
   gulp.src('views/index.handlebars')
     .pipe(open());
