@@ -14,10 +14,14 @@ module.exports = function(app) {
   });
 
   app.get('/createdash', (req, res) => {
-  res.render('createdash', { title: 'Create Dash' });
+    res.render('createdash', { title: 'Create Dash' });
   });
 
   app.get('/dashboard', (req, res) => {
-  res.render('dashboard', { title: 'Dashboard' });
+    res.render('dashboard', { title: 'Dashboard' });
   });
+
+  app.get('/user', (req, res) => {
+    res.render('user', { title: 'User' });
+  });  
 }; 
