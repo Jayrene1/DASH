@@ -27,7 +27,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('open', function() {
-  gulp.src('views/home.handlebars')
+  gulp.src('views/index.handlebars')
     .pipe(open());
 });
 

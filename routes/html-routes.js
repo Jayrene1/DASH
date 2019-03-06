@@ -20,8 +20,4 @@ module.exports = function(app) {
   app.get('/dashboard', (req, res) => {
   res.render('dashboard', { title: 'Dashboard' });
   });
-
-  app.get('/home', (req, res) => {
-    res.render('home', { title: 'Home Page' });
-    });
 }; 

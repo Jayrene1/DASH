@@ -6,100 +6,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
     <title> {{ title }} </title>
 
+    <!-- CSS Files -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-    <!-- CSS Files -->
     <link href="/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="../css/demo.css" rel="stylesheet" />
-
-{{!-- this is what you added Josh --}}
-<style> /* set the CSS */
-body { font: 12px Arial;}
-
-path { 
-    stroke: steelblue;
-    stroke-width: 4;
-    fill: none;
-}
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: grey;
-    stroke-width: 2.5;
-    shape-rendering: crispEdges;
-}
-</style>
-
-    
-
-    
 </head>
-<body>
-    {{{ body }}}
+<body class="">
 
-    {{!-- this is what you added Josh --}}
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="/js/d3linechart.js"></script>
-    <script src="/js/d3donutchart.js"></script>
-    <script src="/js/d3barchart.js"></script>
-    <script src="/js/d3piechart.js"></script>
-
-
-</head>
-<body>
-    {{{ body }}}
-    {{!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> --}}
-    <!--   Core JS Files   -->
-  <script src="/javascript/js/core/jquery.min.js"></script>
-  <script src="/javascript/js/core/popper.min.js"></script>
-  <script src="/javascript/js/core/bootstrap-material-design.min.js"></script>
-  <script src="javascript/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="js/materialize_js/core/popper.min.js"></script>
+  <script src="js/materialize_js/core/bootstrap-material-design.min.js"></script>
+  <script src="js/materialize_js/plugins/perfect-scrollbar.jquery.min.js"></script>
   <!-- Plugin for the momentJs  -->
-  <script src="/javascript/js/plugins/moment.min.js"></script>
+  <script src="js/materialize_js/plugins/moment.min.js"></script>
   <!--  Plugin for Sweet Alert -->
-  <script src="/javascript/js/plugins/sweetalert2.js"></script>
+  <script src="js/materialize_js/plugins/sweetalert2.js"></script>
   <!-- Forms Validations Plugin -->
-  <script src="/javascript/js/plugins/jquery.validate.min.js"></script>
+  <script src="js/materialize_js/plugins/jquery.validate.min.js"></script>
   <!-- Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
-  <script src="/javascript/js/plugins/jquery.bootstrap-wizard.js"></script>
+  <script src="js/materialize_js/plugins/jquery.bootstrap-wizard.js"></script>
   <!--	Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
-  <script src="/javascript/js/plugins/bootstrap-selectpicker.js"></script>
+  <script src="js/materialize_js/plugins/bootstrap-selectpicker.js"></script>
   <!--  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
-  <script src="/javascript/js/plugins/bootstrap-datetimepicker.min.js"></script>
+  <script src="js/materialize_js/plugins/bootstrap-datetimepicker.min.js"></script>
   <!--  DataTables.net Plugin, full documentation here: https://datatables.net/  -->
-  <script src="/javascript/js/plugins/jquery.dataTables.min.js"></script>
+  <script src="js/materialize_js/plugins/jquery.dataTables.min.js"></script>
   <!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
-  <script src="/javascript/js/plugins/bootstrap-tagsinput.js"></script>
+  <script src="js/materialize_js/plugins/bootstrap-tagsinput.js"></script>
   <!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
-  <script src="/javascript/js/plugins/jasny-bootstrap.min.js"></script>
+  <script src="js/materialize_js/plugins/jasny-bootstrap.min.js"></script>
   <!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
-  <script src="/javascript/js/plugins/fullcalendar.min.js"></script>
+  <script src="js/materialize_js/plugins/fullcalendar.min.js"></script>
   <!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
-  <script src="/javascript/js/plugins/jquery-jvectormap.js"></script>
+  <script src="js/materialize_js/plugins/jquery-jvectormap.js"></script>
   <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-  <script src="/javascript/js/plugins/nouislider.min.js"></script>
+  <script src="js/materialize_js/plugins/nouislider.min.js"></script>
   <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
   <!-- Library for adding dinamically elements -->
-  <script src="/javascript/js/plugins/arrive.min.js"></script>
-  <!--  Google Maps Plugin    -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+  <script src="js/materialize_js/plugins/arrive.min.js"></script>
   <!-- Chartist JS -->
-  <script src="/javascript/js/plugins/chartist.min.js"></script>
+  <script src="js/materialize_js/plugins/chartist.min.js"></script>
   <!--  Notifications Plugin    -->
-  <script src="/javascript/js/plugins/bootstrap-notify.js"></script>
+  <script src="js/materialize_js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="/javascript/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
-  <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-  <script src="/javascript/demo.js"></script>
-  <script src="/javascript/dashboard.js"></script>
+  <script src="js/materialize_js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
+    {{{ body }}}
+
 </body>
 </html>
