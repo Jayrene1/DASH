@@ -1,5 +1,5 @@
-function D3Chart(data, config, style){
-  if(data === undefined || config === undefined){  //TODO add style === undefined
+function D3Chart(data, dimensions, config, style){
+  if(data === undefined || config === undefined || style === undefined){  //TODO add style === undefined
     throw new Error("Missing an argument to D3Chart");
   }
   if(config.type === undefined){
@@ -15,22 +15,22 @@ function D3Chart(data, config, style){
       this.data = parseChartData(data, config);
       this.createChart = createLineChart;   //save the chart function
       //call the function which will both return the svg and save it to this.chart
-      createLineChart(this.data, config, style, this); 
+      createLineChart(this.data, dimensions, config, style, this); 
       break;
     case "bar":
       this.data = parseChartData(data, config);
       this.createChart = createBarChart;
-      createBarChart(this.data, config, style, this);
+      createBarChart(this.data, dimensions, config, style, this);
       break;
     case "donut":
       this.data = parseChartData(data, config);
       this.createChart = createDonutChart;
-      createDonutChart(this.data, config, style, this);
+      createDonutChart(this.data, dimensions, config, style, this);
       break;
     case "pie":
       this.data = parseChartData(data, config);
       this.createChart = createPieChart;
-      createPieChart(this.data, config, style, this);
+      createPieChart(this.data, dimensions, config, style, this);
       break;      
     default:
       throw new Error("config object is missing the type property");
@@ -49,8 +49,7 @@ function parseChartData(data, config){
   return tempArr;
 }
 
-
-function createLineChart(data, config, style, me){
+function createLineChart(data, dimensions, config, style, me){
   
   if(config.timeSeries){
       // data/time parsing
@@ -60,39 +59,78 @@ function createLineChart(data, config, style, me){
   // set the ranges by graph dimension
   var x;
   if(config.timeSeries){
-      x = d3.time.scale().range([0, config.width]);
+      x = d3.time.scale().range([0, dimensions.width]);
   }else{
-      x = d3.scale.linear().range([0, config.width]);
+      x = d3.scale.linear().range([0, dimensions.width]);
   }
   
   
-  var y = d3.scale.linear().range([config.height, 0]);
+  var y = d3.scale.linear().range([dimensions.height, 0]);
 
   // define graph x/y axis
-  var xAxis = d3.svg.axis().scale(x)
-      .orient("bottom")
-  if(config.timeSeries){
-      xAxis.ticks(5)
-          .tickFormat(d3.time.format("%m-%d-%Y"))
+//   var yAxis, 
+//       xAxis = d3.svg.axis()
+//         .scale(x)     
+//         .orient("bottom");
+//     if(config.timeSeries){
+//         xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+//     };
+
+  if(config && config.axisTicks){
+    var axis = config.axisTicks;
+    var yticks = axis.y ? axis.y : 4;
+    var xticks = axis.x ? axis.x : 4;
+
+    xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(xticks);
+    if(config.timeSeries){
+        xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+    };
+
+    yAxis = d3.svg.axis().scale(y)
+        .orient("left").ticks(yticks);
+    if(config && typeof config.yTickFunc === "function" ){
+        yAxis.tickFormat(config.yTickFunc);
+    }
   }else{
-      xAxis.ticks(data.length);
+
+    xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(4);
+    if(config.timeSeries){
+        xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+    };
+
+    yAxis = d3.svg.axis().scale(y)
+        .orient("left").ticks(4);
+    if(config && typeof config.yTickFunc === "function" ){
+        yAxis.tickFormat(config.yTickFunc);
+    }
   }
 
-  var yAxis = d3.svg.axis().scale(y)
-      .orient("left").ticks(5);
-
   var valueline = d3.svg.line()
-      .x(function(d) { return x(d.xprop); })
-      .y(function(d) { return y(d.yprop); });        
+    .x(function(d) { return x(d.xprop); })
+    .y(function(d) { return y(d.yprop); });
       
   // Adds the svg canvas
-  var svg = d3.select(config.el)
-      .append("svg")
-          .attr("width", config.width + config.margin.left + config.margin.right)
-          .attr("height", config.height + config.margin.top + config.margin.bottom)
-      .append("g")
-          .attr("transform", 
-              "translate(" + config.margin.left + "," + config.margin.top + ")");
+  var svg;
+  if(style && style.backgroundColor){
+    var backgroundColor = style.backgroundColor;
+    svg = d3.select(config.el)
+        .append("svg")
+            .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
+            .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+            .style("background-color", backgroundColor)
+        .append("g")
+            .attr("transform", 
+                "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+  }else{
+        svg = d3.select(config.el)
+            .append("svg")
+                .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
+                .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+                .style("background-color", "white")
+            .append("g")
+                .attr("transform", 
+                    "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+  }
 
   data.forEach(function(d) {
       if(config.timeSeries){
@@ -106,34 +144,140 @@ function createLineChart(data, config, style, me){
   x.domain(d3.extent(data, function(d) { return d.xprop; }));
   y.domain([0, d3.max(data, function(d) { return d.yprop; })]);
 
-  // Add the valueline path.
-  svg.append("path")
-      .attr("class", "line")
-      .attr("d", valueline(data));
+  // if(data.length<6){
+  //   svg.select('.x.axis').call(xAxis)
+  // }else{
+  //   svg.select('.x.axis').call(xAxis)
+  //     .selectAll("text")
+  //         .attr("y", 0)
+  //         .attr("x", 8)
+  //         .attr("dy", ".35em")
+  //         .attr("transform", "rotate(50)")
+  //         .style("text-anchor", "start");
+  // }
 
-  // Add the X Axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + config.height + ")")
-      .call(xAxis);
+  // Add the valueline path.
+  if(style && style.line){
+    var line = style.line;
+    var color = line.color ? line.color : "black";
+    var width = line.width ? line.width : 2; 
+
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(data))
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", width);  
+  }else{
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(data))
+        .attr("stroke", "black")
+        .attr("fill", "none");     
+  }
 
   // Add the Y Axis
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
+  var xaxis, yaxis;
+  if(style && style.axis){
+    var axis = style.axis;
+    var color = axis.color ? axis.color : "black";
+    var opacity = axis.opacity ? axis.opacity : 1.0;
+    var width = axis.width ? axis.width : 2;
+    var fontSize = axis.textSize ? axis.textSize : 8
+    var ytitle = config.yLabel ? config.yLabel : "";
+    //xaxis
+    xaxis = svg.append("g")
+        .attr("class", "x axis")
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", width)
+        .attr("font-size", fontSize)
+        .style("opacity", opacity)
+        .attr("transform", "translate(0," + dimensions.height + ")")
+        .call(xAxis);
+
+        //yaxis
+    yaxis = svg.append("g")
+        .attr("class", "y axis")
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", width)    
+        .attr("font-size", fontSize)    
+        .style("opacity", opacity)
+        .call(yAxis)
+        .append("text") // just for the title (ticks are automatic)
+            //.attr("transform", "rotate(-90)") // rotate the text!
+            //.attr("font-size", fontSize)
+            .attr("x", -25)
+            .attr("y", -15)
+            .text(ytitle);
+  }else{
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("fill", "none")
+        .attr("stroke", "black")  
+        .attr("stroke-width", 2)  
+        .attr("font-size", 8)
+        .style("opacity", 1.0)
+        .attr("transform", "translate(0," + dimensions.height + ")")
+        .call(xAxis)    
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .attr("fill", "none")
+        .attr("stroke", "black")  
+        .attr("stroke-width", 2)   
+        .style("opacity", 1.0)
+        .attr("font-size", 8)
+        .call(yAxis)
+        .append("text") // just for the title (ticks are automatic)
+            //.attr("transform", "rotate(-90)") // rotate the text!
+            //.attr("font-size", 8)
+            .attr("x", -25)
+            .attr("y", -15)
+            .text(ytitle);
+  }
+      
+//   function customXAxis(g) {
+//     //https://gist.github.com/mbostock/3371592
+//     var axis = style.axis;
+//     g.call(xAxis);
+//     g.select(".domain").attr("fill", "none");
+//     if(axis.color){
+//         g.select(".domain").style("stroke", style.axis.color)
+//         g.selectAll(".tick line").attr("stroke", style.axis.color);
+//         g.selectAll(".tick text").attr("stroke", style.axis.color)
+//     }
+//     if(axis.textSize){
+//         g.selectAll(".tick text").attr("font-size", style.axis.textSize);
+//     }
+//   }     
+
+//   function customYAxis(g) {
+//     //https://gist.github.com/mbostock/3371592
+//     var axis = style.axis;
+//     g.call(yAxis);
+//     g.select(".domain").attr("fill", "none");
+//     if(axis.color){
+//         g.select(".domain").style("stroke", style.axis.color)
+//         g.selectAll(".tick line").attr("stroke", style.axis.color);
+//         g.selectAll(".tick text").attr("stroke", style.axis.color)
+//     }
+//     if(axis.textSize){
+//         g.selectAll(".tick text").attr("font-size", style.axis.textSize);
+//     }
+//   }  
 
   me.chart = svg;
   return svg;
 }
 
-function createBarChart(data, config, style, me){
+function createBarChart(data, dimensions, config, style, me){
   var components = {};
   var parseDate;
 
-  config.width = config.width  - config.margin.left - config.margin.right
-  config.height = config.height  - config.margin.top - config.margin.bottom
-  // config.width = config.width - config.margin.left - config.margin.right,
-  // config.height = config.height - config.margin.top - config.margin.bottom;
+  dimensions.width = dimensions.width  - dimensions.margin.left - dimensions.margin.right
+  dimensions.height = dimensions.height  - dimensions.margin.top - dimensions.margin.bottom
   if(config.timeSeries){
       // data/time parsing
       parseDate = d3.time.format("%Y-%d-%m").parse;
@@ -141,53 +285,164 @@ function createBarChart(data, config, style, me){
 
 
   components.x = d3.scale.ordinal()
-      .rangeRoundBands([0, config.width], .1);
+      .rangeRoundBands([0, dimensions.width], .1);
       
   components.y = d3.scale.linear()
-      .range([config.height, 0]);
+      .range([dimensions.height, 0]);
 
   // D3 Axis - renders a d3 scale in SVG
-  components.xAxis = d3.svg.axis()
-      .scale(components.x)
-      .orient("bottom");
-  if(config.timeSeries){
-      components.xAxis.tickFormat(d3.time.format("%m-%d-%Y"));
+//   components.xAxis = d3.svg.axis()
+//       .scale(components.x)
+//       .orient("bottom");
+//   if(config.timeSeries){
+//       components.xAxis.tickFormat(d3.time.format("%m-%d-%Y"));
+//   }
+
+  if(config && config.axisTicks){
+    var axis = config.axisTicks;
+    var yticks = axis.y ? axis.y : 4;
+    var xticks = axis.x ? axis.x : 4;
+
+    components.xAxis = d3.svg.axis().scale(components.x).orient("bottom").ticks(xticks);
+    if(config.timeSeries){
+        omponents.xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+    };
+
+    components.yAxis = d3.svg.axis()
+        .scale(components.y)
+        .orient("left")
+        .ticks(config.yticks);
+    if(config && typeof config.yTickFunc === "function" ){
+        components.yAxis.tickFormat(config.yTickFunc);
+    }
+  }else{
+    components.xAxis = d3.svg.axis().scale(components.x).orient("bottom").ticks(4);
+    if(config.timeSeries){
+        omponents. xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+    };
+
+    components.yAxis = d3.svg.axis()
+        .scale(components.y)
+        .orient("left")
+        .ticks(4);
+    if(config && typeof config.yTickFunc === "function" ){
+        components.yAxis.tickFormat(config.yTickFunc);
+    }
   }
 
 
-  components.yAxis = d3.svg.axis()
-      .scale(components.y)
-      .orient("left")
-      .ticks(10);
-  if(config.yDataVal && config.yDataVal === "%"){
-      components.yAxis.tickFormat(d => Math.round(d*100/d3.max(data)) + "%");
-  }else if(config.yDataVal && config.yDataVal === "%"){
-      components.yAxis.tickFormat(d =>  "$" + d3.format(",.2f")(data) );
-  }
-
+  
   // create an SVG element (appended to body)
   // set size
   // add a "g" element (think "group")
   // annoying d3 gotcha - the 'svg' variable here is a 'g' element
   // the final line sets the transform on <g>, not on <svg>
-  components.svg = d3.select(config.el).append("svg")
-      .attr("width", config.width +config. margin.left + config.margin.right)
-      .attr("height", config.height + config.margin.top + config.margin.bottom)
-  .append("g")
-      .attr("transform", "translate(" + config.margin.left + "," + config.margin.top + ")");
 
-  components.svg.append("g")
+
+
+  // Adds the svg canvas 
+  var svg;
+  if(style && style.backgroundColor){
+    var backgroundColor = style.backgroundColor;
+    components.svg = d3.select(config.el).append("svg")
+      .attr("width", dimensions.width +dimensions. margin.left + dimensions.margin.right)
+      .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+      .style("background-color", backgroundColor)
+      .append("g")
+        .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+  }else{
+    components.svg = d3.select(config.el).append("svg")
+      .attr("width", dimensions.width +dimensions. margin.left + dimensions.margin.right)
+      .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+      .style("background-color", "white")
+      .append("g")
+        .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+  }
+
+  if(style && style.backgroundColor){
+    var backgroundColor = style.backgroundColor;
+    components.svg.append("rect")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("fill", backgroundColor);
+  }else{
+    components.svg.append("rect")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("fill", "white");
+  }
+
+  if(style && style.axis){
+    var axis = style.axis;
+    var color = axis.color ? axis.color : "black";
+    var opacity = axis.opacity ? axis.opacity : 1.0;
+    var width = axis.width ? axis.width : "2";
+    var fontSize = axis.textSize ? axis.textSize : 8
+    var ytitle = config.yLabel ? config.yLabel : "";
+    components.svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + config.height + ")")
+      .attr("transform", "translate(0," + dimensions.height + ")")
+      .attr("stroke", color)
+      .attr("stroke-width", width)   
+      .attr("font-size", fontSize)
+      .style("opacity", opacity)
+      .attr("fill", "none")
+  //   .append("text") // just for the title (ticks are automatic)
+  //     //.attr("transform", "rotate(-90)") // rotate the text!
+  //     .attr("x", 0 )
+  //     .attr("y", -345)
+  //     .text("Date"); 
 
-  components.svg.append("g")
+    components.svg.append("g")
+        .attr("class", "y axis")
+        .attr("stroke", color)
+        .attr("stroke-width", width)   
+        .attr("font-size", fontSize)
+        .style("opacity", opacity)
+        .attr("fill", "none")
+        .append("text") // just for the title (ticks are automatic)
+            //.attr("transform", "rotate(-90)") // rotate the text!
+            .attr("x", -25)
+            .attr("y", -15)
+            .text(ytitle);
+
+    // d3.select('.y axis').selectAll('text')
+    //     .style("opacity", opacity);
+    // d3.select('.y axis').selectAll('line')
+    //     .style("opacity", opacity);            
+  }else{
+    components.svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + dimensions.height + ")")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2)   
+      .attr("font-size", 8)
+      .style("opacity", 1.0)
+      .attr("fill", "none")
+    //   .append("text") // just for the title (ticks are automatic)
+    //     //.attr("transform", "rotate(-90)") // rotate the text!
+    //     .attr("x", 0 )
+    //     .attr("y", -345)
+    //     .text("Date"); 
+
+    components.svg.append("g")
       .attr("class", "y axis")
+      .attr("stroke", "black")
+      .attr("stroke-width", 2)   
+      .attr("font-size", 8)
+      .style("opacity", 1.0)
+      .attr("fill", "none")
       .append("text") // just for the title (ticks are automatic)
-          .attr("transform", "rotate(-90)") // rotate the text!
-          .attr("y", 6)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text("Value ($)");
+          //.attr("transform", "rotate(-90)") // rotate the text!
+          .attr("x", -25)
+          .attr("y", -15)
+          .text("");
+
+    // d3.select('.axis').selectAll('text')
+    //     .style("opacity", 1.0);
+    // d3.select('.axis').selectAll('line')
+    //     .style("opacity", 1.0);
+  }
   
   data.forEach(function(d) {
       if(config.timeSeries){
@@ -205,15 +460,15 @@ function createBarChart(data, config, style, me){
   // someSelection.call(thing) is roughly equivalent to thing(someSelection[i])
   //   for everything in the selection\
   // the end result is g populated with text and lines!
-  if(data.length<5){
+  if(data.length<6){
       components.svg.select('.x.axis').transition().duration(300).call(components.xAxis)
   }else{
       components.svg.select('.x.axis').transition().duration(300).call(components.xAxis)
           .selectAll("text")
               .attr("y", 0)
-              .attr("x", 9)
+              .attr("x", 8)
               .attr("dy", ".35em")
-              .attr("transform", "rotate(90)")
+              .attr("transform", "rotate(50)")
               .style("text-anchor", "start");
   }
 
@@ -228,30 +483,51 @@ function createBarChart(data, config, style, me){
       .transition()
       .duration(300)
       .attr("y", components.y(0))
-      .attr("height", config.height - components.y(0))
+      .attr("height", dimensions.height - components.y(0))
       .style('fill-opacity', 1e-6)
       .remove();
 
-  // data that needs DOM = enter() (a set/selection, not an event!)
-  bars.enter().append("rect")
-      .attr("class", "bar")
-      .style("fill", "steelblue")
-      .attr("y", components.y(0))
-      .attr("height", config.height - components.y(0));
+  if(style && style.bar){
+    // data that needs DOM = enter() (a set/selection, not an event!)
+    var bar = style.bar;
+    var color = bar.color ? bar.color : "black";
+    bars.enter().append("rect")
+        .attr("class", "bar")
+        .style("fill", color)
+        .attr("y", components.y(0))
+        .attr("height", dimensions.height - components.y(0));
 
-  // the "UPDATE" set:
-  bars.transition().duration(300).attr("x", function(d) { return components.x(d.xprop); }) // (d) is one item from the data array, x is the scale object from above
+    // the "UPDATE" set:
+    bars.transition().duration(300).attr("x", function(d) { return components.x(d.xprop); }) // (d) is one item from the data array, x is the scale object from above
       .attr("width", components.x.rangeBand()) // constant, so no callback function(d) here
-      .style("fill", "steelblue")
+      .style("fill", color)
       .attr("y", function(d) { return components.y(d.yprop); })
-      .attr("height", function(d) { return config.height - components.y(d.yprop); }); // flip the height, because y's domain is bot
+      .attr("height", function(d) { return dimensions.height - components.y(d.yprop); }); // flip the height, because y's domain is bot
+
+
+  }else{
+    // data that needs DOM = enter() (a set/selection, not an event!)
+    bars.enter().append("rect")
+      .attr("class", "bar")
+      .style("fill", "black")
+      .attr("y", components.y(0))
+      .attr("height", dimensions.height - components.y(0));
+
+      // the "UPDATE" set:
+    bars.transition().duration(300).attr("x", function(d) { return components.x(d.xprop); }) // (d) is one item from the data array, x is the scale object from above
+      .attr("width", components.x.rangeBand()) // constant, so no callback function(d) here
+      .style("fill", "black")
+      .attr("y", function(d) { return components.y(d.yprop); })
+      .attr("height", function(d) { return dimensions.height - components.y(d.yprop); }); // flip the height, because y's domain is bot
+
+  }
 
   me.chart = components.svg;  
   return components.svg;  
 }
 
-function createPieChart(data, config, style, me) {
-  var color = d3.scale.ordinal().range(config.colors);
+function createPieChart(data, dimensions, config, style, me) {
+  var color = d3.scale.ordinal().range(style.colors);
       //var color = d3.scale.category10();
 
   var pie = d3.layout.pie()
@@ -262,17 +538,30 @@ function createPieChart(data, config, style, me) {
 
   var arc = d3.svg.arc()
     .innerRadius(0)
-    .outerRadius(config.radius - 10);
+    .outerRadius(dimensions.radius - 10);
 
   var labelArc = d3.svg.arc()
-    .outerRadius(config.radius - 40)
-    .innerRadius(config.radius - 40);      
+    .outerRadius(dimensions.radius - 40)
+    .innerRadius(dimensions.radius - 40);      
 
-  var svg = d3.select(config.el).append("svg")
-    .attr("width", config.width)
-    .attr("height", config.height)
-    .append("g")
-    .attr("transform", "translate(" + config.width / 2 + "," + config.height / 2 + ")");
+    // Adds the svg canvas 
+  var svg;
+  if(style && style.backgroundColor){
+    var backgroundColor = style.backgroundColor;
+    svg = d3.select(config.el).append("svg")
+        .attr("width", dimensions.width)
+        .attr("height", dimensions.height)
+        .style("background-color", backgroundColor)
+        .append("g")
+        .attr("transform", "translate(" + dimensions.width / 2 + "," + dimensions.height / 2 + ")");
+  }else{
+    svg = d3.select(config.el).append("svg")
+        .attr("width", dimensions.width)
+        .attr("height", dimensions.height)
+        .style("background-color", "white")
+        .append("g")
+        .attr("transform", "translate(" + dimensions.width / 2 + "," + dimensions.height / 2 + ")");
+  }
 
   var g = svg.selectAll('.arc')
     .data(pie(data))
@@ -301,13 +590,13 @@ function createPieChart(data, config, style, me) {
   return svg;
 }
 
-function createDonutChart(data, config, style, me){
+function createDonutChart(data, dimensions, config, style, me){
   var width = 800,
   height = 250,
   radius = Math.min(config.width, config.height) / 2;
 
   var color = d3.scale.ordinal()
-      .range(config.colors);
+      .range(style.colors);
   //var color = d3.scale.category10();
 
   var pie = d3.layout.pie()
@@ -317,19 +606,33 @@ function createDonutChart(data, config, style, me){
       });
 
   var arc = d3.svg.arc()
-      .outerRadius(config.radius - 10)
-      .innerRadius(config.radius - 70);
+      .outerRadius(dimensions.radius - 10)
+      .innerRadius(dimensions.radius - 70);
 
   var labelArc = d3.svg.arc()
-      .outerRadius(config.radius - 40)
-      .innerRadius(config.radius - 40);
+      .outerRadius(dimensions.radius - 40)
+      .innerRadius(dimensions.radius - 40);
 
-  var svg = d3.select(config.el).append("svg")
-      .attr("width", config.width)
-      .attr("height", config.height)
-          .append("g")
-          .attr("transform", "translate(" + config.width / 2 + 
-                                      "," + config.height / 2 + ")");
+  // Adds the svg canvas 
+  var svg;
+  if(style && style.backgroundColor){
+  var backgroundColor = style.backgroundColor;
+    svg = d3.select(config.el).append("svg")
+        .attr("width", dimensions.width)
+        .attr("height", dimensions.height)
+        .style("background-color", backgroundColor)
+            .append("g")
+            .attr("transform", "translate(" + dimensions.width / 2 + 
+                                        "," + dimensions.height / 2 + ")");
+  }else{
+    svg = d3.select(config.el).append("svg")
+        .attr("width", dimensions.width)
+        .attr("height", dimensions.height)
+        .style("background-color", "white")
+            .append("g")
+            .attr("transform", "translate(" + dimensions.width / 2 + 
+                                        "," + dimensions.height / 2 + ")");
+  }
 
   var g = svg.selectAll(".arc")
       .data(pie(data))
