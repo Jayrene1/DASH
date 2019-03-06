@@ -21,14 +21,20 @@
             accusamus quas? Exercitationem ea at odio magni incidunt libero explicabo optio ipsum iure aut magnam quo
             architecto quae dignissimos officiis ullam, laudantium eum ipsa? Quidem numquam repellat eum eius, impedit
             voluptate quaerat eligendi dolorem explicabo provident.</p>
-          <a href="#" type="button" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Get Started</a>
+          <button class="btn btn-round" data-toggle="modal" data-target="#loginModal">
+            Login<i class="material-icons">assignment</i>
+          </button>
+          <button class="btn btn-round" data-toggle="modal" data-target="#signupModal">
+            <i class="material-icons">assignment</i>
+            SignUp
+        </button>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12m">
           <img src="/img/logo.svg" alt="logo"> 
         </div>
       </div>
     </div>
-    {{!-- </div>
-    </div> --}}
   </div>
+    {{> loginModal}}
+    {{> signupModal}}
 </div>

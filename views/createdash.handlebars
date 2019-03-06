@@ -1,17 +1,48 @@
-  <div class="wrapper ">
-    {{> sidebar}}
-    <div class="main-panel">
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
-        <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <a class="navbar-brand" href="#">Dashboard</a>
+<div class="wrapper ">
+  {{> sidebar}}
+  <div class="main-panel">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+      <div class="container-fluid">
+        <div class="navbar-wrapper">
+          <a class="navbar-brand" href="#">Dashboard</a>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="content">
+
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            Select your Chart Type and Data
+          </div>
+          <div class="card-body">
+            <span>Select Your Chart Type</span>
+            <br>
+            <span>Line</span>
+            <input type="radio" name="chart-type" value="Line" />
+            <br>
+            <span>Bar</span>
+            <input type="radio" name="chart-type" value="Bar" />
+            <br>
+            <span>Pie</span>
+            <input type="radio" name="chart-type" value="Pie" />
+            <br>
+            <span>Donut</span>
+            <input type="radio" name="chart-type" value="Donut" />
+            <br>
+            <br>
+            <span>Choose your Data Set</span>
+            <br>
+            <form method="POST" action="uploadFile" enctype="multipart/form-data">
+              <strong>Upload file:</strong>
+              <input type="file" name="file" />
+            </form>
           </div>
         </div>
-      </nav>
-      <!-- End Navbar -->
-      <div class="content">
-      
       </div>
+
     </div>
   </div>
+</div>
