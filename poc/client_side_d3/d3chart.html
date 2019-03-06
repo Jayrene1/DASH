@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <style> /* set the CSS */
             body { font: 12px Arial;}
-
+/* 
             path { 
                 stroke: steelblue;
                 stroke-width: 2;
@@ -17,17 +17,225 @@
                 stroke: grey;
                 stroke-width: 2.5;
                 shape-rendering: crispEdges;
-            }
+            } */
         </style>
-        <script type=
-            "text/javascript" src="http://d3js.org/d3.v3.min.js">
+          <!-- Added link to the jQuery library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="d3linechart.js"></script>
+        <script src="d3barchart.js"></script>
+        <script src="d3donutchart.js"></script>
+        <script src="d3piechart.js"></script>
+        <script src="d3chart.js"></script>
+
+        <script>
+           $(document).ready(function() {
+               var PieChart = new D3Chart(
+                    //DATA
+                    [   //config has xprop and yprop which tell parseChartData in d3chart the properties
+                        {type: "Pizza", amnt: 45},
+                        {type: "Lasagna", amnt: 25},
+                        {type: "Spaghetti", amnt: 25},
+                        {type: "Spinach", amnt: 5}
+                    ],{ //DIMENSIONS
+                        //sets the radius of the pie and the width and height of the entire svg
+                        radius: 160,
+                        width: 375,
+                        height: 375,
+                    },{ //CONFIG
+                        //xprop and yprop will allow parseChartData to generate the d3 array from DATA
+                        //type of the chart. d3chart.js constructor uses this prop to switch which chart its makes
+                        //el html element the svg is appended to 
+                        xprop: "type",
+                        yprop: "amnt",
+                        type: "pie",
+                        el: "#pie"
+                    },{
+                        backgroundColor: "blue",
+                        //only pie/doughnut use colors array for their wedges                       
+                        colors: ['cc0033', 'a30052', 'cc0066', '9900cc', 'ff00cc', '993366'] 
+                    }
+               );
+               var DonutChart = new D3Chart( //same 
+                    [ 
+                        {type: "Pizza", amnt: 45},
+                        {type: "Lasagna", amnt: 25},
+                        {type: "Spaghetti", amnt: 25},
+                        {type: "Spinach", amnt: 5}
+                    ],{
+                        radius: 160,
+                        width: 375,
+                        height: 375,
+                    },{                        
+                        xprop: "type",
+                        yprop: "amnt",
+                        type: "donut",
+                        el: "#donut"
+                    },{
+                        backgroundColor: "blue",
+                        colors: ['cc0033', 'a30052', 'cc0066', '9900cc', 'ff00cc', '993366'],
+                    }
+               );               
+               var TimeLine = new D3Chart(
+                    [
+                        {
+                            "date": "2012-13-04T00:00:00.000Z",
+                            "value": 65.23
+                        },
+                        {
+                            "date":  "2012-12-04T00:00:00.000Z",
+                            "value": 62.77
+                        },
+                        {
+                            "date":  "2012-11-04T00:00:00.000Z",
+                            "value": 66.2
+                        },
+                        {
+                            "date":  "2012-10-04T00:00:00.000Z",
+                            "value": 68.44
+                        },
+                        {
+                            "date":  "2012-09-04T00:00:00.000Z",
+                            "value": 66.23
+                        }
+                    ],
+                    {
+                        margin: {top: 30, right: 20, bottom: 40, left: 50},
+                        width: 400,
+                        height: 400,
+                    },{
+                        timeSeries: true,
+                        yTickFunc: function(d) { return '$' + d3.format(',f')(d) },
+                        axisTicks: {x: 5, y: 4},
+                        xprop: "date",
+                        yprop: "value",
+                        type: "line",
+                        el: "#timeline"
+                    },{
+                        backgroundColor: "blue",
+                        axis: {color: "red", opacity: 0.4, width: 2,  textSize: 7},
+                        line: {color: "red", width: 2}
+                    }
+               );
+               var LineChart = new D3Chart(
+                    [
+                        {
+                            "num": 1,
+                            "val": 1
+                        },
+                        {
+                            "num": 2,
+                            "val": 1
+                        },
+                        {
+                            "num": 3,
+                            "val": 2
+                        },
+                        {
+                            "num": 4,
+                            "val": 3
+                        },
+                        {
+                            "num": 5,
+                            "val": 5
+                        },
+                        {
+                            "num": 6,
+                            "val": 8
+                        },
+                        {
+                            "num": 7,
+                            "val": 13
+                        },
+                        {
+                            "num": 8,
+                            "val": 21
+                        },
+                        {
+                            "num": 9,
+                            "val": 34
+                        }
+                    ],{
+                        margin: {top: 30, right: 20, bottom: 30, left: 50},
+                        width: 375,
+                        height: 375
+                    },{
+                        timeSeries: false,
+                        axisTicks: {x: 7, y: 3},
+                        xLabel: undefined,
+                        yLabel: "Value ($)",
+                        xprop: "num",
+                        yprop: "val",
+                        type: "line",
+                        el: "#line"
+                    },{
+                        backgroundColor: "blue",
+                        axis: {color: "red", opacity: 0.3, width: 2, textSize: 7},
+                        line: {color: "red", width: 2}                        
+                    }
+               );
+               
+               var BarChart = new D3Chart(
+                    [
+                        {
+                            "date": "2012-08-04T00:00:00.000Z",
+                            "value": 76.86
+                        },
+                        {
+                            "date": "2012-01-04T00:00:00.000Z",
+                            "value": 58.13
+                        },
+                        {
+                            "date": "2012-25-05T00:00:00.000Z",
+                            "value": 99
+                        },
+                        {
+                            "date": "2012-19-05T00:00:00.000Z",
+                            "value": 85.44
+                        },
+                        {
+                            "date": "2012-13-05T00:00:00.000Z",
+                            "value": 65.23
+                        },
+                        {
+                            "date": "2012-09-05T00:00:00.000Z",
+                            "value": 66.23
+                        },
+                        {
+                            "date": "2012-09-05T00:00:00.000Z",
+                            "value": 61.63
+                        }
+                    ],{
+                        margin: {top: 30, right: 20, bottom: 50, left: 50},
+                        width: 300,
+                        height: 300
+                    },{
+                        timeSeries: false,                        
+                        axisTicks: {x: 5, y: 4},
+                        xLabel: undefined,
+                        yLabel: "Value ($)",
+                        xprop: "date",
+                        yprop: "value",
+                        type: "bar",
+                        el: "#bar"
+                    },{
+                        backgroundColor: "blue",
+                        axis: {color: "red", opacity: 0.2, width: 2,  textSize: 9},
+                        bar: {color: "red"}
+                    }
+               ); 
+            });
+
         </script>
+
     </head>
     <body>
-
+        <div id="timeline"></div>
+        <div id="line"></div>
+        <div id="bar"></div>
+        <div id="pie"></div>
+        <div id="donut"></div>
     </body>
-    <script src="d3linechart.js"></script>
-    <!-- <script src="d3barchart.js"></script> -->
-    <!-- <script src="d3donutchart.js"></script> -->
-    <!-- <script src="d3piechart.js"></script> -->
+
+
 </html>
