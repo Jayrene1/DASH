@@ -1,0 +1,213 @@
+<form class="modal multi-step" id="demo-modal-3">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h4 class="modal-title step-1" data-step="1">How should we add the data?</h4>
+                <h4 class="modal-title step-2" data-step="2">What file do you want to upload?</h4>
+                <h4 class="modal-title step-3" data-step="3">Which dataset would you like to clone from?</h4>
+                <h4 class="modal-title step-4" data-step="4">Create-it-Yourself</h4>
+                <h4 class="modal-title step-5" data-step="5">Does this look okay?</h4>
+
+            </div>
+
+            <div class="modal-body step-1 text-center" data-step="1">
+
+                <h3>How do you wanna do this?</h3>
+                <button type="button" class="btn btn-primary" onclick="uploadEvent()">Upload a File</button>
+                <br>
+                <button type="button" class="btn btn-primary" onclick="cloneEvent()">Clone from Existing</button>
+                <br>
+                <button type="button" class="btn btn-primary" onclick="createDataEvent()">Manually Add Data</button>
+                <br>
+
+            </div>
+
+            <div class="modal-body step-2" data-step="2">
+                {{> selectDatasetToUpload}}
+            </div>
+
+            <div class="modal-body step-3 text-center" data-step="3">
+                {{> selectDatasetToClone}}
+            </div>
+
+            <div class="modal-body step-4 text-center" data-step="4">
+                {{> manuallyCreateDataset}}
+            </div>
+
+            <div class="modal-body step-5 text-center" data-step="5">
+                This is what I got for you, check it out.
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+
+                <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+                <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+
+                <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+                <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+
+                <button type="button" class="btn btn-primary step step-5" data-step="5" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+
+                <button type="button" class="btn btn-primary step step-5" data-step="5" data-dismiss="modal">Save & Quit</button>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" data-toggle="modal" data-target="#demo-modal-3"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+
+<script>
+
+uploadEvent = function(){
+    sendEvent('#demo-modal-3', 2);
+};
+
+cloneEvent = function(){
+    sendEvent('#demo-modal-3', 3);
+};
+
+createDataEvent = function(){
+    sendEvent('#demo-modal-3', 4);
+};
+
+sendEvent = function(sel, step) {
+    $(sel).trigger('next.m.' + step);
+};
+
++function($) {
+    'use strict';
+
+    var modals = $('.modal.multi-step');
+
+    modals.each(function(idx, modal) {
+        var $modal = $(modal);
+        var $bodies = $modal.find('div.modal-body');
+        var total_num_steps = $bodies.length;
+        var $progress = $modal.find('.m-progress');
+        var $progress_bar = $modal.find('.m-progress-bar');
+        var $progress_stats = $modal.find('.m-progress-stats');
+        var $progress_current = $modal.find('.m-progress-current');
+        var $progress_total = $modal.find('.m-progress-total');
+        var $progress_complete  = $modal.find('.m-progress-complete');
+        var reset_on_close = $modal.attr('reset-on-close') === 'true';
+
+        function reset() {
+            $modal.find('.step').hide();
+            $modal.find('[data-step]').hide();
+        }
+
+        function completeSteps() {
+            $progress_stats.hide();
+            $progress_complete.show();
+            $modal.find('.progress-text').animate({
+                top: '-2em'
+            });
+            $modal.find('.complete-indicator').animate({
+                top: '-2em'
+            });
+            $progress_bar.addClass('completed');
+        }
+
+        function getPercentComplete(current_step, total_steps) {
+            return Math.min(current_step / total_steps * 100, 100) + '%';
+        }
+
+        function updateProgress(current, total) {
+            $progress_bar.animate({
+                width: getPercentComplete(current, total)
+            });
+            if (current - 1 >= total_num_steps) {
+                completeSteps();
+            } else {
+                $progress_current.text(current);
+            }
+
+            $progress.find('[data-progress]').each(function() {
+                var dp = $(this);
+                if (dp.data().progress <= current - 1) {
+                    dp.addClass('completed');
+                } else {
+                    dp.removeClass('completed');
+                }
+            });
+        }
+
+        function goToStep(step) {
+            reset();
+            var to_show = $modal.find('.step-' + step);
+            if (to_show.length === 0) {
+                // at the last step, nothing else to show
+                return;
+            }
+            to_show.show();
+            var current = parseInt(step, 10);
+            updateProgress(current, total_num_steps);
+            findFirstFocusableInput(to_show).focus();
+        }
+
+        function findFirstFocusableInput(parent) {
+            var candidates = [parent.find('input'), parent.find('select'),
+                              parent.find('textarea'),parent.find('button')],
+                winner = parent;
+            $.each(candidates, function() {
+                if (this.length > 0) {
+                    winner = this[0];
+                    return false;
+                }
+            });
+            return $(winner);
+        }
+
+        function bindEventsToModal($modal) {
+            var data_steps = [];
+            $('[data-step]').each(function() {
+                var step = $(this).data().step;
+                if (step && $.inArray(step, data_steps) === -1) {
+                    data_steps.push(step);
+                }
+            });
+
+            $.each(data_steps, function(i, v) {
+                $modal.on('next.m.' + v, {step: v}, function(e) {
+                    goToStep(e.data.step);
+                });
+            });
+        }
+
+        function initialize() {
+            reset();
+            updateProgress(1, total_num_steps);
+            $modal.find('.step-1').show();
+            $progress_complete.hide();
+            $progress_total.text(total_num_steps);
+            bindEventsToModal($modal, total_num_steps);
+            $modal.data({
+                total_num_steps: $bodies.length,
+            });
+            if (reset_on_close){
+                //Bootstrap 2.3.2
+                $modal.on('hidden', function () {
+                    reset();
+                    $modal.find('.step-1').show();
+                })
+                //Bootstrap 3
+                $modal.on('hidden.bs.modal', function () {
+                    reset();
+                    $modal.find('.step-1').show();
+                })
+            }
+        }
+
+        initialize();
+    })
+}(jQuery);
+
+</script>
