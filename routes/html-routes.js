@@ -24,4 +24,8 @@ module.exports = function(app) {
   app.get('/user', (req, res) => {
     res.render('user', { title: 'User' });
   });  
+
+  app.get('/datasets', (req, res) => {
+    res.render('datasets', { title: 'My Datasets' });
+  });  
 }; 
