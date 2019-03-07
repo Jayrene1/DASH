@@ -5,7 +5,7 @@
   margin-bottom: 30px;
   margin-top: 30px;
   border-radius: $border-radius-large;
-  color: $gray-dark;
+  color: #ffffff;
   background: $white-color;
   width: 100%;
 
@@ -167,7 +167,7 @@
     &.bg-primary,
     &.card-rotate.bg-primary .front,
     &.card-rotate.bg-primary .back{
-      background: linear-gradient(60deg, #727df5, #3e4891);
+      background: linear-gradient(60deg, $purple-400, $purple-600);
     }
     .card-header-info .card-icon,
     .card-header-info .card-text,

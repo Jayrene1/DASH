@@ -51,7 +51,7 @@
             display: inline-block;
             width: $mdb-checkbox-size;
             height: $mdb-checkbox-size;
-            border: 1px solid $mdb-checkbox-border-color;
+            border: 1px solid #727df5;
             overflow: hidden;
             z-index: 1;
             border-radius: $border-radius-base;
@@ -88,11 +88,11 @@
 
         &:checked {
             & + .form-check-sign .check {
-                background: $mdb-checkbox-checked-color;
+                background: #ffffff;
             }
 
             & + .form-check-sign .check:before {
-                color: #FFFFFF;
+                color: #343a40;
                 box-shadow: 0 0 0 10px,
                             10px -10px 0 10px,
                             32px 0 0 20px,
@@ -142,7 +142,7 @@
   }
 
   .form-check-input[disabled] ~ .form-check-sign .check{
-      border-color: #000000;
+      border-color: #727df5;
       opacity: .26;
   }
 
