@@ -29,7 +29,16 @@
     "express-handlebars": "^3.0.2",
     "mysql": "^2.16.0",
     "mysql2": "^1.6.5",
+    "node-sass": "^4.11.0",
     "sequelize": "^4.42.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-install": "^1.1.0",
+    "gulp-open": "^3.0.1",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4"
+  }
 }

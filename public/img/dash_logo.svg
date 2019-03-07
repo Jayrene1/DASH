@@ -1,0 +1,24 @@
+<svg width="350" height="350" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect x="-1" y="-1" width="352" height="352" id="canvas_background" fill="none"/>
+  <g id="canvasGrid" display="none">
+   <rect id="svg_3" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <rect fill="#727df5" stroke="#727df5" stroke-width="1.5" x="34.999817" y="21.999933" width="317" height="284" id="svg_4" rx="45" transform="rotate(90 193.49981689453125,163.99993896484378) "/>
+  <rect fill="#5461c4" stroke="#5461c4" stroke-width="1.5" x="22.999805" y="26.999867" width="317" height="284" id="svg_1" rx="45" transform="rotate(90 181.4998016357422,168.99986267089847) "/>
+  <rect fill="#727df5" stroke="#727df5" stroke-width="1.5" x="6.999817" y="33.999933" width="317" height="284" id="svg_2" rx="45" transform="rotate(90 165.49981689453125,175.99993896484378) "/>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="231.499969" y="216.437479" id="svg_7" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(1,0,0,4.890918731689453,0,-756.4797152876854) " stroke="#000"/>
+  <text fill="#000000" stroke="#000" stroke-width="0" stroke-opacity="null" x="266.500057" y="262.437594" id="svg_8" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="rotate(-2.9576594829559326 273.1718749999998,254.1875000000006) "/>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="252.500022" y="228.437509" id="svg_9" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(5.4215569496154785,0,0,4.4330973625183105,-1175.4432803243399,-708.290899604559) " stroke="#000"/>
+  <text fill="#000000" stroke-width="0" stroke-opacity="null" x="226.499956" y="202.437443" id="svg_10" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(4.896965503692627,0,0,4.314749240875244,-882.6017965003848,-598.1050661504269) " stroke="#000"/>
+  <text fill="#ffffff" stroke-width="0" stroke-opacity="null" x="218.992595" y="214.985785" id="svg_11" font-size="24" font-family="'Trebuchet MS', Gadget, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(14.49285980392484,0,0,12.884302889246786,-3110.712079270608,-2482.74948457548) " stroke="#000">D</text>
+  <rect fill="#727df5" stroke-width="0" stroke-opacity="null" x="58.499561" y="148.437315" width="74.000186" height="52.000123" id="svg_14" stroke="#000"/>
+  <rect stroke="#000" fill="#ffffff" stroke-width="0" stroke-opacity="null" x="70.000021" y="164.437356" width="69.000169" height="19.00004" id="svg_16" rx="5"/>
+ </g>
+</svg>
