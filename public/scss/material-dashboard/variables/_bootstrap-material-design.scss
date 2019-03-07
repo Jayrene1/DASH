@@ -78,7 +78,7 @@ $font-color:                 #66615b !default;
 // $brand-info:        $cyan !default;
 // $brand-rose:        $pink !default;
 
-$black-color:           #3C4858 !default;
+$black-color:           #ffffff;
 
 // Dropdowns
 
@@ -123,10 +123,10 @@ $bmd-radio-color-disabled-inverse: rgba(
   0.30
 ); // dark theme spec: Disabled: #FFFFFF, Opacity  30%
 
-$white-color: #fff !default;
-$navbar-color: #555 !default;
+$white-color: #404954 !default;
+$navbar-color: #eee !default;
 $pills-color: $navbar-color !default;
-$black-color: #3C4858 !default;
+$black-color: #ffffff;
 $link-color: $brand-primary;
 $white-transparent: rgba($white-color, .8);
 $transparent: transparent;
