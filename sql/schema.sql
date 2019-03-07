@@ -23,3 +23,23 @@ CREATE TABLE samples (
     `UpdatedAt` INT,
      PRIMARY KEY (id)
 );
+CREATE TABLE users (
+    `id` INT NOT NULL AUTO_INCREMENT,
+	`Username` VARCHAR(16) CHARACTER SET utf8 NOT NULL,
+    `Dashboards` LONGTEXT,
+     PRIMARY KEY (id)
+);
+CREATE TABLE dashboards (
+    `id` INT NOT NULL AUTO_INCREMENT,
+	`Dashboard_Name` VARCHAR(64) CHARACTER SET utf8 NOT NULL,
+    `Graphs` LONGTEXT,
+    `Last_Modified` TIMESTAMP,
+     PRIMARY KEY (id)
+);
+CREATE TABLE graphs (
+    `id` INT NOT NULL AUTO_INCREMENT,
+	`Graph_Name` VARCHAR(64) CHARACTER SET utf8 NOT NULL,
+    `Values` LONGTEXT,
+    `Last_Modified` TIMESTAMP,
+     PRIMARY KEY (id)
+);

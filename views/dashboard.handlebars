@@ -18,13 +18,25 @@
             <span>Donut</span>
             <input type="radio" name="chart-type" value="Donut"/>
             <br>
+            <span>Does your Dataset have Headers?</span>
+            <br>
+            <span>Yes</span>
+            <input type="radio" name="header-type" value="header"/>
+            <br>
+            <span>No</span>
+            <input type="radio" name="header-type" value="noHeader"/>
+            <br>
+            <div class="border" id="loaded-data">
+                <span id="dataSet">DataSet Place Holder</span>
+            </div>
+            <div id="dropdowns"></div>
             <br>
             <span>Choose your Data Set</span>
             <br>
-            <form method="POST" action="uploadFile" enctype="multipart/form-data">
-                <strong>Upload file:</strong> 
-                <input type="file" name="file"/>
-            </form>
+            <strong>Upload file:</strong> 
+            <input type="file" id="file"/>
+            <button id="Load">Load</button>
+            <button id="Build">Build</button>
         </div>
     </div>
 </div>
