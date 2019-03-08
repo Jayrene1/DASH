@@ -2,6 +2,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
 
+<<<<<<< HEAD
+=======
             <div class="modal-header">
 
                 <h4 class="modal-title step-1" data-step="1">Add your data</h4>
@@ -12,9 +14,10 @@
 
             </div>
 
+>>>>>>> 4e75c032dbeeddaae5294caae2dc1fe7c54fdb0a
             <div class="modal-body step-1 text-center" data-step="1">
 
-                <h3>How do you wanna do this?</h3>
+                <h3>please select your data upload option</h3>
                 <button type="button" class="btn btn-primary" onclick="uploadEvent()">Upload a File</button>
                 <br>
                 <button type="button" class="btn btn-primary" onclick="cloneEvent()">Clone from Existing</button>
@@ -24,20 +27,24 @@
 
             </div>
 
-            <div class="modal-body step-2" data-step="2">
+            <div class="modal-body step-2 data-step" data-step="2">
                 {{> selectDatasetToUpload}}
             </div>
 
-            <div class="modal-body step-3 text-center" data-step="3">
+            <div class="modal-body step-3 data-step text-center" data-step="3">
                 {{> selectDatasetToClone}}
             </div>
 
-            <div class="modal-body step-4 text-center" data-step="4">
+            <div class="modal-body step-4 data-step text-center" data-step="4">
                 {{> manuallyCreateDataset}}
             </div>
 
-            <div class="modal-body step-5 text-center" data-step="5">
-                This is what I got for you, check it out.
+            <div class="modal-body step-5 data-step text-center" data-step="5" id="verifyHeaders">
+                {{> headerQuestion}}
+            </div>
+
+            <div class="modal-body step-6 data-step text-center" data-step="5">
+                please verify this output
             </div>
 
             <div class="modal-footer">
@@ -51,7 +58,7 @@
                 <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
 
                 <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
-                <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+                <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="parseText()">Continue</button>
 
                 <button type="button" class="btn btn-primary step step-5" data-step="5" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
 
@@ -65,6 +72,33 @@
 <span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" data-toggle="modal" data-target="#demo-modal-3"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
 
 <script>
+
+var inputData;
+var config = {
+	delimiter: "",	// auto-detect
+	newline: "",	// auto-detect
+	quoteChar: '"',
+	escapeChar: '"',
+	header: false,
+	transformHeader: undefined,
+	dynamicTyping: false,
+	preview: 0,
+	encoding: "",
+	worker: false,
+	comments: false,
+	step: undefined,
+	complete: undefined,
+	error: undefined,
+	download: false,
+	skipEmptyLines: false,
+	chunk: undefined,
+	fastMode: undefined,
+	beforeFirstChunk: undefined,
+	withCredentials: undefined,
+	transform: undefined,
+	delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP]
+};
+var parsedData;
 
 uploadEvent = function(){
     sendEvent('#demo-modal-3', 2);
@@ -82,6 +116,77 @@ sendEvent = function(sel, step) {
     $(sel).trigger('next.m.' + step);
 };
 
+parseText = function(){
+    inputData = $("#manualDataField").text();
+    sendEvent('#demo-modal-3', 5);
+};
+
+parseFile = function(){
+    console.log($("#file"));
+    inputData = $("#file").prop('files')[0];
+    sendEvent('#demo-modal-3', 5);
+};
+
+headerCheck = function(boo){
+    if (boo){
+        config.header = true;
+        var result = Papa.parse(inputData,config);
+        parsedData = result.data;
+        buildPreviewTable(boo);
+    }
+    else{
+        var result = Papa.parse(inputData,config);
+        parsedData = result.data;
+        verifyHeaders();
+    }
+};
+
+buildPreviewTable = function(boo){
+
+    {{!-- var table = $("<table>");
+    var thead = $("<thead>");
+    var theadRow = $("<tr>");
+    var tbody = $("<tbody>");
+
+    var lines = 
+    var firstFive = [];
+    for (var i=0; i<5; i++){
+        firstFive.push(lines[i]);
+    }
+
+    var firstRow = firstFive[0].split(',');
+    var columns = firstRow.length;
+
+    for (var j=0; j<columns; j++){
+        var headerLabel = $("<th>").attr("scope","col").text(firstRow[j]).appendTo(theadRow);
+    }
+
+    theadRow.appendTo(thead);
+    thead.appendTo(table);
+
+    for (var k=1; k<5; k++){
+        var row = firstFive[k].split(',');
+        var tbodyRow = $("<tr>");
+        for (var l=0; l<columns; l++){
+            var datum = $("<td>").text(row[l]).appendTo(tbodyRow);
+        }
+        tbodyRow.appendTo(tbody);
+    }
+
+    tbody.appendTo(table);
+    return table; --}}
+};
+
+verifyHeaders = function(){
+    $("#verifyHeaders").children().remove();
+    var label = $("<p>").text("For each column, a sample of data will be displayed. Please define a header for that column and click 'next' or 'back' to return to the beginning.").appendTo("#verifyHeaders");
+    var newHeader = $("<input>").attr({
+        "type":"text",
+        "class":"text=center"
+    });
+
+};
+
 +function($) {
     'use strict';
 
@@ -91,53 +196,11 @@ sendEvent = function(sel, step) {
         var $modal = $(modal);
         var $bodies = $modal.find('div.modal-body');
         var total_num_steps = $bodies.length;
-        var $progress = $modal.find('.m-progress');
-        var $progress_bar = $modal.find('.m-progress-bar');
-        var $progress_stats = $modal.find('.m-progress-stats');
-        var $progress_current = $modal.find('.m-progress-current');
-        var $progress_total = $modal.find('.m-progress-total');
-        var $progress_complete  = $modal.find('.m-progress-complete');
         var reset_on_close = $modal.attr('reset-on-close') === 'true';
 
         function reset() {
             $modal.find('.step').hide();
             $modal.find('[data-step]').hide();
-        }
-
-        function completeSteps() {
-            $progress_stats.hide();
-            $progress_complete.show();
-            $modal.find('.progress-text').animate({
-                top: '-2em'
-            });
-            $modal.find('.complete-indicator').animate({
-                top: '-2em'
-            });
-            $progress_bar.addClass('completed');
-        }
-
-        function getPercentComplete(current_step, total_steps) {
-            return Math.min(current_step / total_steps * 100, 100) + '%';
-        }
-
-        function updateProgress(current, total) {
-            $progress_bar.animate({
-                width: getPercentComplete(current, total)
-            });
-            if (current - 1 >= total_num_steps) {
-                completeSteps();
-            } else {
-                $progress_current.text(current);
-            }
-
-            $progress.find('[data-progress]').each(function() {
-                var dp = $(this);
-                if (dp.data().progress <= current - 1) {
-                    dp.addClass('completed');
-                } else {
-                    dp.removeClass('completed');
-                }
-            });
         }
 
         function goToStep(step) {
@@ -149,7 +212,6 @@ sendEvent = function(sel, step) {
             }
             to_show.show();
             var current = parseInt(step, 10);
-            updateProgress(current, total_num_steps);
             findFirstFocusableInput(to_show).focus();
         }
 
@@ -184,10 +246,7 @@ sendEvent = function(sel, step) {
 
         function initialize() {
             reset();
-            updateProgress(1, total_num_steps);
             $modal.find('.step-1').show();
-            $progress_complete.hide();
-            $progress_total.text(total_num_steps);
             bindEventsToModal($modal, total_num_steps);
             $modal.data({
                 total_num_steps: $bodies.length,
