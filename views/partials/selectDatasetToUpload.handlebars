@@ -2,7 +2,7 @@
 <div class="file-upload">
   <button class="file-upload-btn" type="button" onclick='$(".file-upload-input").trigger( "click" )'>Add Dataset File (.tsv or .csv or .txt)</button>
   <div class="file-upload-wrap">
-    <input class="file-upload-input" type='file' onchange="readURL(this)" accept=".tsv,.csv"/>
+    <input class="file-upload-input" type='file' id="file" onchange="readURL(this)" accept=".tsv,.csv"/>
     <div class="drag-text">
       <h3>I crave files... Feed me, seymour</h3>
     </div>
@@ -38,7 +38,7 @@
   
   function removeUpload() {
     $('.file-upload-input').remove();
-    var newInput = $('<input class="file-upload-input" type="file" onchange="readURL(this);" accept=".tsv,.csv"/>').prependTo(".file-upload-wrap");
+    var newInput = $('<input class="file-upload-input" type="file" id="file" onchange="readURL(this);" accept=".tsv,.csv"/>').prependTo(".file-upload-wrap");
     $('.file-upload-content').hide();
     $('.file-upload-btn').show();
     $('.file-upload-wrap').show();
@@ -50,6 +50,7 @@
       $('.file-upload-wrap').bind('dragleave', function () {
           $('.file-upload-wrap').removeClass('file-dropping');
   });
+  
 </script>
 <style>
     .file-upload {
