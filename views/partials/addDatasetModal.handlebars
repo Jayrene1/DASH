@@ -1,0 +1,259 @@
+<form class="modal multi-step" id="demo-modal-3">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body step-1 text-center" data-step="1">
+
+                <h3>please select your data upload option</h3>
+                <button type="button" class="btn btn-primary" onclick="uploadEvent()">Upload a File</button>
+                <br>
+                <button type="button" class="btn btn-primary" onclick="cloneEvent()">Clone from Existing</button>
+                <br>
+                <button type="button" class="btn btn-primary" onclick="createDataEvent()">Manually Add Data</button>
+                <br>
+
+            </div>
+
+            <div class="modal-body step-2 data-step" data-step="2">
+                {{> selectDatasetToUpload}}
+            </div>
+
+            <div class="modal-body step-3 data-step text-center" data-step="3">
+                {{> selectDatasetToClone}}
+            </div>
+
+            <div class="modal-body step-4 data-step text-center" data-step="4">
+                {{> manuallyCreateDataset}}
+            </div>
+
+            <div class="modal-body step-5 data-step text-center" data-step="5" id="verifyHeaders">
+                {{> headerQuestion}}
+            </div>
+
+            <div class="modal-body step-6 data-step text-center" data-step="5">
+                please verify this output
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+
+                <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+                <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+
+                <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+                <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="parseText()">Continue</button>
+
+                <button type="button" class="btn btn-primary step step-5" data-step="5" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+
+                <button type="button" class="btn btn-primary step step-5" data-step="5" data-dismiss="modal">Save & Quit</button>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" data-toggle="modal" data-target="#demo-modal-3"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+
+<script>
+
+var inputData;
+var config = {
+	delimiter: "",	// auto-detect
+	newline: "",	// auto-detect
+	quoteChar: '"',
+	escapeChar: '"',
+	header: false,
+	transformHeader: undefined,
+	dynamicTyping: false,
+	preview: 0,
+	encoding: "",
+	worker: false,
+	comments: false,
+	step: undefined,
+	complete: undefined,
+	error: undefined,
+	download: false,
+	skipEmptyLines: false,
+	chunk: undefined,
+	fastMode: undefined,
+	beforeFirstChunk: undefined,
+	withCredentials: undefined,
+	transform: undefined,
+	delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP]
+};
+var parsedData;
+
+uploadEvent = function(){
+    sendEvent('#demo-modal-3', 2);
+};
+
+cloneEvent = function(){
+    sendEvent('#demo-modal-3', 3);
+};
+
+createDataEvent = function(){
+    sendEvent('#demo-modal-3', 4);
+};
+
+sendEvent = function(sel, step) {
+    $(sel).trigger('next.m.' + step);
+};
+
+parseText = function(){
+    inputData = $("#manualDataField").text();
+    sendEvent('#demo-modal-3', 5);
+};
+
+parseFile = function(){
+    console.log($("#file"));
+    inputData = $("#file").prop('files')[0];
+    sendEvent('#demo-modal-3', 5);
+};
+
+headerCheck = function(boo){
+    if (boo){
+        config.header = true;
+        var result = Papa.parse(inputData,config);
+        parsedData = result.data;
+        buildPreviewTable(boo);
+    }
+    else{
+        var result = Papa.parse(inputData,config);
+        parsedData = result.data;
+        verifyHeaders();
+    }
+};
+
+buildPreviewTable = function(boo){
+
+    {{!-- var table = $("<table>");
+    var thead = $("<thead>");
+    var theadRow = $("<tr>");
+    var tbody = $("<tbody>");
+
+    var lines = 
+    var firstFive = [];
+    for (var i=0; i<5; i++){
+        firstFive.push(lines[i]);
+    }
+
+    var firstRow = firstFive[0].split(',');
+    var columns = firstRow.length;
+
+    for (var j=0; j<columns; j++){
+        var headerLabel = $("<th>").attr("scope","col").text(firstRow[j]).appendTo(theadRow);
+    }
+
+    theadRow.appendTo(thead);
+    thead.appendTo(table);
+
+    for (var k=1; k<5; k++){
+        var row = firstFive[k].split(',');
+        var tbodyRow = $("<tr>");
+        for (var l=0; l<columns; l++){
+            var datum = $("<td>").text(row[l]).appendTo(tbodyRow);
+        }
+        tbodyRow.appendTo(tbody);
+    }
+
+    tbody.appendTo(table);
+    return table; --}}
+};
+
+verifyHeaders = function(){
+    $("#verifyHeaders").children().remove();
+    var label = $("<p>").text("For each column, a sample of data will be displayed. Please define a header for that column and click 'next' or 'back' to return to the beginning.").appendTo("#verifyHeaders");
+    var newHeader = $("<input>").attr({
+        "type":"text",
+        "class":"text=center"
+    });
+
+};
+
++function($) {
+    'use strict';
+
+    var modals = $('.modal.multi-step');
+
+    modals.each(function(idx, modal) {
+        var $modal = $(modal);
+        var $bodies = $modal.find('div.modal-body');
+        var total_num_steps = $bodies.length;
+        var reset_on_close = $modal.attr('reset-on-close') === 'true';
+
+        function reset() {
+            $modal.find('.step').hide();
+            $modal.find('[data-step]').hide();
+        }
+
+        function goToStep(step) {
+            reset();
+            var to_show = $modal.find('.step-' + step);
+            if (to_show.length === 0) {
+                // at the last step, nothing else to show
+                return;
+            }
+            to_show.show();
+            var current = parseInt(step, 10);
+            findFirstFocusableInput(to_show).focus();
+        }
+
+        function findFirstFocusableInput(parent) {
+            var candidates = [parent.find('input'), parent.find('select'),
+                              parent.find('textarea'),parent.find('button')],
+                winner = parent;
+            $.each(candidates, function() {
+                if (this.length > 0) {
+                    winner = this[0];
+                    return false;
+                }
+            });
+            return $(winner);
+        }
+
+        function bindEventsToModal($modal) {
+            var data_steps = [];
+            $('[data-step]').each(function() {
+                var step = $(this).data().step;
+                if (step && $.inArray(step, data_steps) === -1) {
+                    data_steps.push(step);
+                }
+            });
+
+            $.each(data_steps, function(i, v) {
+                $modal.on('next.m.' + v, {step: v}, function(e) {
+                    goToStep(e.data.step);
+                });
+            });
+        }
+
+        function initialize() {
+            reset();
+            $modal.find('.step-1').show();
+            bindEventsToModal($modal, total_num_steps);
+            $modal.data({
+                total_num_steps: $bodies.length,
+            });
+            if (reset_on_close){
+                //Bootstrap 2.3.2
+                $modal.on('hidden', function () {
+                    reset();
+                    $modal.find('.step-1').show();
+                })
+                //Bootstrap 3
+                $modal.on('hidden.bs.modal', function () {
+                    reset();
+                    $modal.find('.step-1').show();
+                })
+            }
+        }
+
+        initialize();
+    })
+}(jQuery);
+
+</script>
