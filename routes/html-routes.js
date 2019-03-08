@@ -14,11 +14,11 @@ module.exports = function(app) {
   });
 
   app.get('/createdash', (req, res) => {
-    res.render('createdash', { title: 'Create Dash' });
+    res.render('createdash', { title: 'Create Dash', create: true });
   });
 
   app.get('/dashboard', (req, res) => {
-    res.render('dashboard', { title: 'Dashboard' });
+    res.render('dashboard', { title: 'Dashboard', create: true });
   });
 
   app.get('/user', (req, res) => {
