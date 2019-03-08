@@ -1,5 +1,5 @@
 function D3Chart(data, dimensions, config, style){
-  if(data === undefined || config === undefined || style === undefined){  //TODO add style === undefined
+  if(data === undefined || dimensions === undefined || config === undefined || style === undefined){  //TODO add style === undefined
     throw new Error("Missing an argument to D3Chart");
   }
   if(config.type === undefined){
@@ -12,22 +12,26 @@ function D3Chart(data, dimensions, config, style){
 
   switch( this.type ) {
     case "line":
+      cleanArgumentObjs(arguments, "line");
       this.data = parseChartData(data, config);
       this.createChart = createLineChart;   //save the chart function
       //call the function which will both return the svg and save it to this.chart
       createLineChart(this.data, dimensions, config, style, this); 
       break;
     case "bar":
+      cleanArgumentObjs(arguments, "bar");
       this.data = parseChartData(data, config);
       this.createChart = createBarChart;
       createBarChart(this.data, dimensions, config, style, this);
       break;
     case "donut":
+      cleanArgumentObjs(arguments, "donut");
       this.data = parseChartData(data, config);
       this.createChart = createDonutChart;
       createDonutChart(this.data, dimensions, config, style, this);
       break;
     case "pie":
+      cleanArgumentObjs(arguments, "pie");
       this.data = parseChartData(data, config);
       this.createChart = createPieChart;
       createPieChart(this.data, dimensions, config, style, this);
@@ -47,6 +51,141 @@ function parseChartData(data, config){
     })
   }
   return tempArr;
+}
+
+function cleanArgumentObjs(arguments, type){
+    var defaults = {
+        circularDefaults: [
+            [ 
+
+            ],{
+                radius: 160,
+                width: 375,
+                height: 375,
+            },{                        
+                // xprop: "type",
+                // yprop: "amnt",
+                // type: "donut",
+                // el: "#donut"
+            },{
+                backgroundColor: "blue",
+                colors: ['cc0033', 'a30052', 'cc0066', '9900cc', 'ff00cc', '993366']
+            }
+        ],
+        axesDefaults: [
+            [
+
+            ],{
+                margin: {top: 20, right: 20, bottom: 50, left: 50},
+                width: 400,
+                height: 400,
+            },{
+                //timeSeries: true,
+                // xTickFunc: undefined,
+                // yTickFunc: undefined,
+                // xLabel: undefined,
+                // yLabel: "Value ($)",
+                axisTicks: {x: 4, y: 4},
+                // xprop: "date",
+                // yprop: "value",
+                // type: "line",
+                // el: "#timeline"
+            },{
+                backgroundColor: "white",
+                axis: {color: "black", opacity: 1.0, width: 2,  textSize: 7},
+                line: {color: "black", width: 2},
+                bar: {color: "black"}
+            }
+        ],
+        circularConfigReq: ["xprop", "yprop", "type", "el"],
+        axesConfigReq: ["timeSeries", "xprop", "yprop", "type", "el"]
+    }    
+    type = type.trim().toLowerCase();
+    switch(type) {
+        case "pie":
+        case "donut":
+            cleanCircularChartsArgs(arguments, type, defaults);
+            break;
+        case "bar":
+        case "line":
+            cleanAxesChartsArgs(arguments, type, defaults);
+            break;
+        default:
+            throw new Error("Invalid type passed to cleanArgumentObjs");
+    }
+
+    function cleanCircularChartsArgs(arguments, type, defaults){ //donut and pie
+      for(var i = 1; i<arguments.length; i++){
+          var obj = arguments[i];
+          var circConfig = defaults.circularConfigReq;
+          if(i===2){
+              for(var j = 0; j<circConfig.length; j++){
+                  if(obj[circConfig[j]] === undefined){
+                      throw new Error("Config object missing required property: "+circConfig);
+                  }
+              }
+          }
+          var defaultsObj = defaults.circularDefaults[i];
+          for(var prop in defaultsObj){
+              var defObj = defaultsObj[prop];
+              // if(prop === "line" && type !== "line"){
+              //   continue;
+              // }else if(prop === "bar" && type !== "bar"){
+              //   continue;
+              // }
+              if(obj[prop]===undefined){
+                  obj[prop] = defObj;
+              }else if(obj[prop].constructor === Array && obj[prop].length < 1){
+                  obj[prop] = defObj;  
+              }else{
+                  if(obj[prop].toString() === "[object Object]"){
+                      var obj2 = obj[prop];
+                      for(var prop2 in defObj){
+                          if(obj2[prop2]===undefined){
+                              obj2[prop2] = defObj[prop2];
+                          }
+                      } 
+                  }
+              }
+          }
+      }
+    }; 
+
+    function cleanAxesChartsArgs(arguments, type, defaults){ //line and bar
+      for(var i = 1; i<arguments.length; i++){
+        var obj = arguments[i];
+        var axesConfig = defaults.axesConfigReq;
+        if(i===2){
+            for(var j = 0; j<axesConfig.length; j++){
+                if(obj[axesConfig[j]] === undefined){
+                    throw new Error("Config object missing required property: "+axesConfig);
+                }
+            }
+        }
+        var defaultsObj = defaults.axesDefaults[i];
+        for(var prop in defaultsObj){
+            var defObj = defaultsObj[prop];
+            if(prop === "line" && type !== "line"){
+              continue;
+            }else if(prop === "bar" && type !== "bar"){
+              continue;
+            }
+            if(obj[prop]===undefined){
+                obj[prop] = defObj;
+            }else{
+              if(obj[prop].toString() === "[object Object]"){
+                  var obj2 = obj[prop];
+                  for(var prop2 in defObj){
+                      if(obj2[prop2]===undefined){
+                          obj2[prop2] = defObj[prop2];
+                      }
+                  } 
+              }
+            }
+        }
+      }       
+    }; 
+
 }
 
 function createLineChart(data, dimensions, config, style, me){
@@ -76,34 +215,34 @@ function createLineChart(data, dimensions, config, style, me){
 //         xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
 //     };
 
-  if(config && config.axisTicks){
-    var axis = config.axisTicks;
-    var yticks = axis.y ? axis.y : 4;
-    var xticks = axis.x ? axis.x : 4;
+  // if(config && config.axisTicks){
+  var axis = config.axisTicks;
+  var yticks = axis.y; // ? axis.y : 4;
+  var xticks = axis.x; // ? axis.x : 4;
 
-    xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(xticks);
-    if(config.timeSeries){
-        xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
-    };
+  xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(xticks);
+  if(config.timeSeries){
+      xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+  };
 
-    yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(yticks);
-    if(config && typeof config.yTickFunc === "function" ){
-        yAxis.tickFormat(config.yTickFunc);
-    }
-  }else{
-
-    xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(4);
-    if(config.timeSeries){
-        xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
-    };
-
-    yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(4);
-    if(config && typeof config.yTickFunc === "function" ){
-        yAxis.tickFormat(config.yTickFunc);
-    }
+  yAxis = d3.svg.axis().scale(y)
+      .orient("left").ticks(yticks);
+  if(config && typeof config.yTickFunc === "function" ){
+      yAxis.tickFormat(config.yTickFunc);
   }
+  // }else{
+
+  //   xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(4);
+  //   if(config.timeSeries){
+  //       xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+  //   };
+
+  //   yAxis = d3.svg.axis().scale(y)
+  //       .orient("left").ticks(4);
+  //   if(config && typeof config.yTickFunc === "function" ){
+  //       yAxis.tickFormat(config.yTickFunc);
+  //   }
+  // }
 
   var valueline = d3.svg.line()
     .x(function(d) { return x(d.xprop); })
@@ -111,26 +250,26 @@ function createLineChart(data, dimensions, config, style, me){
       
   // Adds the svg canvas
   var svg;
-  if(style && style.backgroundColor){
-    var backgroundColor = style.backgroundColor;
-    svg = d3.select(config.el)
-        .append("svg")
-            .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
-            .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
-            .style("background-color", backgroundColor)
-        .append("g")
-            .attr("transform", 
-                "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
-  }else{
-        svg = d3.select(config.el)
-            .append("svg")
-                .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
-                .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
-                .style("background-color", "white")
-            .append("g")
-                .attr("transform", 
-                    "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
-  }
+  //if(style && style.backgroundColor){
+  var backgroundColor = style.backgroundColor;
+  svg = d3.select(config.el)
+      .append("svg")
+          .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
+          .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+          .style("background-color", backgroundColor)
+      .append("g")
+          .attr("transform", 
+              "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+  // }else{
+  //       svg = d3.select(config.el)
+  //           .append("svg")
+  //               .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
+  //               .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+  //               .style("background-color", "white")
+  //           .append("g")
+  //               .attr("transform", 
+  //                   "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+  // }
 
   data.forEach(function(d) {
       if(config.timeSeries){
@@ -157,87 +296,103 @@ function createLineChart(data, dimensions, config, style, me){
   // }
 
   // Add the valueline path.
-  if(style && style.line){
-    var line = style.line;
-    var color = line.color ? line.color : "black";
-    var width = line.width ? line.width : 2; 
+  // if(style && style.line){
+  var line = style.line;
+  var color = line.color ? line.color : "black";
+  var width = line.width ? line.width : 2; 
 
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", valueline(data))
-        .attr("fill", "none")
-        .attr("stroke", color)
-        .attr("stroke-width", width);  
-  }else{
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", valueline(data))
-        .attr("stroke", "black")
-        .attr("fill", "none");     
-  }
+  svg.append("path")
+      .attr("class", "line")
+      .attr("d", valueline(data))
+      .attr("fill", "none")
+      .attr("stroke", color)
+      .attr("stroke-width", width);  
+  // }else{
+  //   svg.append("path")
+  //       .attr("class", "line")
+  //       .attr("d", valueline(data))
+  //       .attr("stroke", "black")
+  //       .attr("fill", "none");     
+  // }
 
   // Add the Y Axis
   var xaxis, yaxis;
-  if(style && style.axis){
-    var axis = style.axis;
-    var color = axis.color ? axis.color : "black";
-    var opacity = axis.opacity ? axis.opacity : 1.0;
-    var width = axis.width ? axis.width : 2;
-    var fontSize = axis.textSize ? axis.textSize : 8
-    var ytitle = config.yLabel ? config.yLabel : "";
-    //xaxis
-    xaxis = svg.append("g")
-        .attr("class", "x axis")
-        .attr("fill", "none")
-        .attr("stroke", color)
-        .attr("stroke-width", width)
-        .attr("font-size", fontSize)
-        .style("opacity", opacity)
-        .attr("transform", "translate(0," + dimensions.height + ")")
-        .call(xAxis);
+  // if(style && style.axis){
+  var axis = style.axis;
+  var color = axis.color ? axis.color : "black";
+  var opacity = axis.opacity ? axis.opacity : 1.0;
+  var width = axis.width ? axis.width : 2;
+  var fontSize = axis.textSize ? axis.textSize : 8
+  var ytitle = config.yLabel ? config.yLabel : "";
+  //xaxis
+  xaxis = svg.append("g")
+      .attr("class", "x axis")
+      .attr("fill", "none")
+      .attr("stroke", color)
+      .attr("stroke-width", width)
+      .attr("font-size", fontSize)
+      .style("opacity", opacity)
+      .attr("transform", "translate(0," + dimensions.height + ")")
+      .call(xAxis);
+  
+  if(style.rotateXLabel){
+    xaxis.selectAll("text")
+      .attr("y", 0)
+      .attr("x", 8)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(50)")
+      .style("text-anchor", "start");
+   }
 
-        //yaxis
-    yaxis = svg.append("g")
-        .attr("class", "y axis")
-        .attr("fill", "none")
-        .attr("stroke", color)
-        .attr("stroke-width", width)    
-        .attr("font-size", fontSize)    
-        .style("opacity", opacity)
-        .call(yAxis)
-        .append("text") // just for the title (ticks are automatic)
-            //.attr("transform", "rotate(-90)") // rotate the text!
-            //.attr("font-size", fontSize)
-            .attr("x", -25)
-            .attr("y", -15)
-            .text(ytitle);
-  }else{
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("fill", "none")
-        .attr("stroke", "black")  
-        .attr("stroke-width", 2)  
-        .attr("font-size", 8)
-        .style("opacity", 1.0)
-        .attr("transform", "translate(0," + dimensions.height + ")")
-        .call(xAxis)    
+      //yaxis
+  yaxis = svg.append("g")
+      .attr("class", "y axis")
+      .attr("fill", "none")
+      .attr("stroke", color)
+      .attr("stroke-width", width)    
+      .attr("font-size", fontSize)    
+      .style("opacity", opacity)
+      .call(yAxis)
+      .append("text") // just for the title (ticks are automatic)
+          //.attr("transform", "rotate(-90)") // rotate the text!
+          //.attr("font-size", fontSize)
+          .attr("x", -25)
+          .attr("y", -15)
+          .text(ytitle);
+  // }else{
+  //   svg.append("g")
+  //       .attr("class", "x axis")
+  //       .attr("fill", "none")
+  //       .attr("stroke", "black")  
+  //       .attr("stroke-width", 2)  
+  //       .attr("font-size", 8)
+  //       .style("opacity", 1.0)
+  //       .attr("transform", "translate(0," + dimensions.height + ")")
+  //       .call(xAxis)    
 
-    svg.append("g")
-        .attr("class", "y axis")
-        .attr("fill", "none")
-        .attr("stroke", "black")  
-        .attr("stroke-width", 2)   
-        .style("opacity", 1.0)
-        .attr("font-size", 8)
-        .call(yAxis)
-        .append("text") // just for the title (ticks are automatic)
-            //.attr("transform", "rotate(-90)") // rotate the text!
-            //.attr("font-size", 8)
-            .attr("x", -25)
-            .attr("y", -15)
-            .text(ytitle);
-  }
-      
+  //   svg.append("g")
+  //       .attr("class", "y axis")
+  //       .attr("fill", "none")
+  //       .attr("stroke", "black")  
+  //       .attr("stroke-width", 2)   
+  //       .style("opacity", 1.0)
+  //       .attr("font-size", 8)
+  //       .call(yAxis)
+  //       .append("text") // just for the title (ticks are automatic)
+  //           //.attr("transform", "rotate(-90)") // rotate the text!
+  //           //.attr("font-size", 8)
+  //           .attr("x", -25)
+  //           .attr("y", -15)
+  //           .text(ytitle);
+  // }
+  if(style.rotateYLabel){
+    yaxis.selectAll("text")
+      .attr("y", 0)
+      .attr("x", 8)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(90)")
+      .style("text-anchor", "start");
+   }      
 //   function customXAxis(g) {
 //     //https://gist.github.com/mbostock/3371592
 //     var axis = style.axis;
@@ -298,37 +453,37 @@ function createBarChart(data, dimensions, config, style, me){
 //       components.xAxis.tickFormat(d3.time.format("%m-%d-%Y"));
 //   }
 
-  if(config && config.axisTicks){
-    var axis = config.axisTicks;
-    var yticks = axis.y ? axis.y : 4;
-    var xticks = axis.x ? axis.x : 4;
+//  if(config && config.axisTicks){
+  var axis = config.axisTicks;
+  var yticks = axis.y; // ? axis.y : 4;
+  var xticks = axis.x; // ? axis.x : 4;
 
-    components.xAxis = d3.svg.axis().scale(components.x).orient("bottom").ticks(xticks);
-    if(config.timeSeries){
-        omponents.xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
-    };
+  components.xAxis = d3.svg.axis().scale(components.x).orient("bottom").ticks(xticks);
+  if(config.timeSeries){
+      omponents.xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+  };
 
-    components.yAxis = d3.svg.axis()
-        .scale(components.y)
-        .orient("left")
-        .ticks(config.yticks);
-    if(config && typeof config.yTickFunc === "function" ){
-        components.yAxis.tickFormat(config.yTickFunc);
-    }
-  }else{
-    components.xAxis = d3.svg.axis().scale(components.x).orient("bottom").ticks(4);
-    if(config.timeSeries){
-        omponents. xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
-    };
-
-    components.yAxis = d3.svg.axis()
-        .scale(components.y)
-        .orient("left")
-        .ticks(4);
-    if(config && typeof config.yTickFunc === "function" ){
-        components.yAxis.tickFormat(config.yTickFunc);
-    }
+  components.yAxis = d3.svg.axis()
+      .scale(components.y)
+      .orient("left")
+      .ticks(yticks);
+  if(config && typeof config.yTickFunc === "function" ){
+      components.yAxis.tickFormat(config.yTickFunc);
   }
+//   }else{
+//     components.xAxis = d3.svg.axis().scale(components.x).orient("bottom").ticks(4);
+//     if(config.timeSeries){
+//         omponents. xAxis.tickFormat(d3.time.format("%m-%d-%Y"))
+//     };
+
+//     components.yAxis = d3.svg.axis()
+//         .scale(components.y)
+//         .orient("left")
+//         .ticks(4);
+//     if(config && typeof config.yTickFunc === "function" ){
+//         components.yAxis.tickFormat(config.yTickFunc);
+//     }
+//   }
 
 
   
@@ -341,108 +496,108 @@ function createBarChart(data, dimensions, config, style, me){
 
 
   // Adds the svg canvas 
-  var svg;
-  if(style && style.backgroundColor){
-    var backgroundColor = style.backgroundColor;
-    components.svg = d3.select(config.el).append("svg")
-      .attr("width", dimensions.width +dimensions. margin.left + dimensions.margin.right)
-      .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
-      .style("background-color", backgroundColor)
-      .append("g")
-        .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
-  }else{
-    components.svg = d3.select(config.el).append("svg")
-      .attr("width", dimensions.width +dimensions. margin.left + dimensions.margin.right)
-      .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
-      .style("background-color", "white")
-      .append("g")
-        .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
-  }
+//   var svg;
+  //if(style && style.backgroundColor){
+  var backgroundColor = style.backgroundColor;
+  components.svg = d3.select(config.el).append("svg")
+    .attr("width", dimensions.width +dimensions. margin.left + dimensions.margin.right)
+    .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+    .style("background-color", backgroundColor)
+    .append("g")
+      .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+//   }else{
+//     components.svg = d3.select(config.el).append("svg")
+//       .attr("width", dimensions.width +dimensions. margin.left + dimensions.margin.right)
+//       .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+//       .style("background-color", "white")
+//       .append("g")
+//         .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+//   }
 
-  if(style && style.backgroundColor){
-    var backgroundColor = style.backgroundColor;
-    components.svg.append("rect")
-      .attr("width", "100%")
-      .attr("height", "100%")
-      .attr("fill", backgroundColor);
-  }else{
-    components.svg.append("rect")
-      .attr("width", "100%")
-      .attr("height", "100%")
-      .attr("fill", "white");
-  }
+//  if(style && style.backgroundColor){
+  var backgroundColor = style.backgroundColor;
+  components.svg.append("rect")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("fill", backgroundColor);
+//   }else{
+//     components.svg.append("rect")
+//       .attr("width", "100%")
+//       .attr("height", "100%")
+//       .attr("fill", "white");
+//   }
 
-  if(style && style.axis){
-    var axis = style.axis;
-    var color = axis.color ? axis.color : "black";
-    var opacity = axis.opacity ? axis.opacity : 1.0;
-    var width = axis.width ? axis.width : "2";
-    var fontSize = axis.textSize ? axis.textSize : 8
-    var ytitle = config.yLabel ? config.yLabel : "";
-    components.svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + dimensions.height + ")")
-      .attr("stroke", color)
-      .attr("stroke-width", width)   
-      .attr("font-size", fontSize)
-      .style("opacity", opacity)
-      .attr("fill", "none")
+  //if(style && style.axis){
+  var axis = style.axis;
+  var color = axis.color ? axis.color : "black";
+  var opacity = axis.opacity ? axis.opacity : 1.0;
+  var width = axis.width ? axis.width : "2";
+  var fontSize = axis.textSize ? axis.textSize : 8
+  var ytitle = config.yLabel ? config.yLabel : "";
+  components.svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + dimensions.height + ")")
+    .attr("stroke", color)
+    .attr("stroke-width", width)   
+    .attr("font-size", fontSize)
+    .style("opacity", opacity)
+    .attr("fill", "none")
   //   .append("text") // just for the title (ticks are automatic)
   //     //.attr("transform", "rotate(-90)") // rotate the text!
   //     .attr("x", 0 )
   //     .attr("y", -345)
   //     .text("Date"); 
 
-    components.svg.append("g")
-        .attr("class", "y axis")
-        .attr("stroke", color)
-        .attr("stroke-width", width)   
-        .attr("font-size", fontSize)
-        .style("opacity", opacity)
-        .attr("fill", "none")
-        .append("text") // just for the title (ticks are automatic)
-            //.attr("transform", "rotate(-90)") // rotate the text!
-            .attr("x", -25)
-            .attr("y", -15)
-            .text(ytitle);
+  components.svg.append("g")
+    .attr("class", "y axis")
+     .attr("stroke", color)
+     .attr("stroke-width", width)   
+     .attr("font-size", fontSize)
+     .style("opacity", opacity)
+     .attr("fill", "none")
+     .append("text") // just for the title (ticks are automatic)
+         //.attr("transform", "rotate(-90)") // rotate the text!
+         .attr("x", -25)
+         .attr("y", -15)
+         .text(ytitle);
 
     // d3.select('.y axis').selectAll('text')
     //     .style("opacity", opacity);
     // d3.select('.y axis').selectAll('line')
     //     .style("opacity", opacity);            
-  }else{
-    components.svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + dimensions.height + ")")
-      .attr("stroke", "black")
-      .attr("stroke-width", 2)   
-      .attr("font-size", 8)
-      .style("opacity", 1.0)
-      .attr("fill", "none")
-    //   .append("text") // just for the title (ticks are automatic)
-    //     //.attr("transform", "rotate(-90)") // rotate the text!
-    //     .attr("x", 0 )
-    //     .attr("y", -345)
-    //     .text("Date"); 
+//   }else{
+//     components.svg.append("g")
+//       .attr("class", "x axis")
+//       .attr("transform", "translate(0," + dimensions.height + ")")
+//       .attr("stroke", "black")
+//       .attr("stroke-width", 2)   
+//       .attr("font-size", 8)
+//       .style("opacity", 1.0)
+//       .attr("fill", "none")
+//     //   .append("text") // just for the title (ticks are automatic)
+//     //     //.attr("transform", "rotate(-90)") // rotate the text!
+//     //     .attr("x", 0 )
+//     //     .attr("y", -345)
+//     //     .text("Date"); 
 
-    components.svg.append("g")
-      .attr("class", "y axis")
-      .attr("stroke", "black")
-      .attr("stroke-width", 2)   
-      .attr("font-size", 8)
-      .style("opacity", 1.0)
-      .attr("fill", "none")
-      .append("text") // just for the title (ticks are automatic)
-          //.attr("transform", "rotate(-90)") // rotate the text!
-          .attr("x", -25)
-          .attr("y", -15)
-          .text("");
+//     components.svg.append("g")
+//       .attr("class", "y axis")
+//       .attr("stroke", "black")
+//       .attr("stroke-width", 2)   
+//       .attr("font-size", 8)
+//       .style("opacity", 1.0)
+//       .attr("fill", "none")
+//       .append("text") // just for the title (ticks are automatic)
+//           //.attr("transform", "rotate(-90)") // rotate the text!
+//           .attr("x", -25)
+//           .attr("y", -15)
+//           .text("");
 
-    // d3.select('.axis').selectAll('text')
-    //     .style("opacity", 1.0);
-    // d3.select('.axis').selectAll('line')
-    //     .style("opacity", 1.0);
-  }
+//     // d3.select('.axis').selectAll('text')
+//     //     .style("opacity", 1.0);
+//     // d3.select('.axis').selectAll('line')
+//     //     .style("opacity", 1.0);
+//   }
   
   data.forEach(function(d) {
       if(config.timeSeries){
@@ -460,21 +615,32 @@ function createBarChart(data, dimensions, config, style, me){
   // someSelection.call(thing) is roughly equivalent to thing(someSelection[i])
   //   for everything in the selection\
   // the end result is g populated with text and lines!
-  if(data.length<6){
+  if(style.rotateXLabel){
       components.svg.select('.x.axis').transition().duration(300).call(components.xAxis)
+        .selectAll("text")
+           .attr("y", 0)
+           .attr("x", 8)
+           .attr("dy", ".35em")
+           .attr("transform", "rotate(50)")
+           .style("text-anchor", "start");
   }else{
-      components.svg.select('.x.axis').transition().duration(300).call(components.xAxis)
-          .selectAll("text")
-              .attr("y", 0)
-              .attr("x", 8)
-              .attr("dy", ".35em")
-              .attr("transform", "rotate(50)")
-              .style("text-anchor", "start");
+      components.svg.select('.x.axis').transition().duration(300).call(components.xAxis);
   }
 
 
   // same for yAxis but with more transform and a title
-  components.svg.select(".y.axis").transition().duration(300).call(components.yAxis)
+  if(style.rotateYLabel){
+    components.svg.select(".y.axis").transition().duration(300).call(components.yAxis)
+      .selectAll("text")
+         .attr("y", 0)
+         .attr("x", 8)
+         .attr("dy", ".35em")
+         .attr("transform", "rotate(90)")
+         .style("text-anchor", "start");
+  }else{
+    components.svg.select(".y.axis").transition().duration(300).call(components.yAxis);
+  }
+
 
   // THIS IS THE ACTUAL WORK!
   var bars = components.svg.selectAll(".bar").data(data, function(d) { return d.xprop; }) // (data) is an array/iterable thing, second argument is an ID generator function
@@ -487,40 +653,40 @@ function createBarChart(data, dimensions, config, style, me){
       .style('fill-opacity', 1e-6)
       .remove();
 
-  if(style && style.bar){
-    // data that needs DOM = enter() (a set/selection, not an event!)
-    var bar = style.bar;
-    var color = bar.color ? bar.color : "black";
-    bars.enter().append("rect")
-        .attr("class", "bar")
-        .style("fill", color)
-        .attr("y", components.y(0))
-        .attr("height", dimensions.height - components.y(0));
-
-    // the "UPDATE" set:
-    bars.transition().duration(300).attr("x", function(d) { return components.x(d.xprop); }) // (d) is one item from the data array, x is the scale object from above
-      .attr("width", components.x.rangeBand()) // constant, so no callback function(d) here
-      .style("fill", color)
-      .attr("y", function(d) { return components.y(d.yprop); })
-      .attr("height", function(d) { return dimensions.height - components.y(d.yprop); }); // flip the height, because y's domain is bot
-
-
-  }else{
-    // data that needs DOM = enter() (a set/selection, not an event!)
-    bars.enter().append("rect")
+  //if(style && style.bar){
+  // data that needs DOM = enter() (a set/selection, not an event!)
+  var bar = style.bar;
+  var color = bar.color ? bar.color : "black";
+  bars.enter().append("rect")
       .attr("class", "bar")
-      .style("fill", "black")
+      .style("fill", color)
       .attr("y", components.y(0))
       .attr("height", dimensions.height - components.y(0));
 
-      // the "UPDATE" set:
-    bars.transition().duration(300).attr("x", function(d) { return components.x(d.xprop); }) // (d) is one item from the data array, x is the scale object from above
-      .attr("width", components.x.rangeBand()) // constant, so no callback function(d) here
-      .style("fill", "black")
-      .attr("y", function(d) { return components.y(d.yprop); })
-      .attr("height", function(d) { return dimensions.height - components.y(d.yprop); }); // flip the height, because y's domain is bot
+  // the "UPDATE" set:
+  bars.transition().duration(300).attr("x", function(d) { return components.x(d.xprop); }) // (d) is one item from the data array, x is the scale object from above
+    .attr("width", components.x.rangeBand()) // constant, so no callback function(d) here
+    .style("fill", color)
+    .attr("y", function(d) { return components.y(d.yprop); })
+    .attr("height", function(d) { return dimensions.height - components.y(d.yprop); }); // flip the height, because y's domain is bot
 
-  }
+
+//   }else{
+//     // data that needs DOM = enter() (a set/selection, not an event!)
+//     bars.enter().append("rect")
+//       .attr("class", "bar")
+//       .style("fill", "black")
+//       .attr("y", components.y(0))
+//       .attr("height", dimensions.height - components.y(0));
+
+//       // the "UPDATE" set:
+//     bars.transition().duration(300).attr("x", function(d) { return components.x(d.xprop); }) // (d) is one item from the data array, x is the scale object from above
+//       .attr("width", components.x.rangeBand()) // constant, so no callback function(d) here
+//       .style("fill", "black")
+//       .attr("y", function(d) { return components.y(d.yprop); })
+//       .attr("height", function(d) { return dimensions.height - components.y(d.yprop); }); // flip the height, because y's domain is bot
+
+//   }
 
   me.chart = components.svg;  
   return components.svg;  
@@ -546,22 +712,22 @@ function createPieChart(data, dimensions, config, style, me) {
 
     // Adds the svg canvas 
   var svg;
-  if(style && style.backgroundColor){
-    var backgroundColor = style.backgroundColor;
-    svg = d3.select(config.el).append("svg")
-        .attr("width", dimensions.width)
-        .attr("height", dimensions.height)
-        .style("background-color", backgroundColor)
-        .append("g")
-        .attr("transform", "translate(" + dimensions.width / 2 + "," + dimensions.height / 2 + ")");
-  }else{
-    svg = d3.select(config.el).append("svg")
-        .attr("width", dimensions.width)
-        .attr("height", dimensions.height)
-        .style("background-color", "white")
-        .append("g")
-        .attr("transform", "translate(" + dimensions.width / 2 + "," + dimensions.height / 2 + ")");
-  }
+  //if(style && style.backgroundColor){
+  var backgroundColor = style.backgroundColor;
+  svg = d3.select(config.el).append("svg")
+      .attr("width", dimensions.width)
+      .attr("height", dimensions.height)
+      .style("background-color", backgroundColor)
+      .append("g")
+      .attr("transform", "translate(" + dimensions.width / 2 + "," + dimensions.height / 2 + ")");
+//   }else{
+//     svg = d3.select(config.el).append("svg")
+//         .attr("width", dimensions.width)
+//         .attr("height", dimensions.height)
+//         .style("background-color", "white")
+//         .append("g")
+//         .attr("transform", "translate(" + dimensions.width / 2 + "," + dimensions.height / 2 + ")");
+//   }
 
   var g = svg.selectAll('.arc')
     .data(pie(data))
@@ -615,24 +781,24 @@ function createDonutChart(data, dimensions, config, style, me){
 
   // Adds the svg canvas 
   var svg;
-  if(style && style.backgroundColor){
+  //if(style && style.backgroundColor){
   var backgroundColor = style.backgroundColor;
-    svg = d3.select(config.el).append("svg")
-        .attr("width", dimensions.width)
-        .attr("height", dimensions.height)
-        .style("background-color", backgroundColor)
-            .append("g")
-            .attr("transform", "translate(" + dimensions.width / 2 + 
-                                        "," + dimensions.height / 2 + ")");
-  }else{
-    svg = d3.select(config.el).append("svg")
-        .attr("width", dimensions.width)
-        .attr("height", dimensions.height)
-        .style("background-color", "white")
-            .append("g")
-            .attr("transform", "translate(" + dimensions.width / 2 + 
-                                        "," + dimensions.height / 2 + ")");
-  }
+  svg = d3.select(config.el).append("svg")
+      .attr("width", dimensions.width)
+      .attr("height", dimensions.height)
+      .style("background-color", backgroundColor)
+          .append("g")
+          .attr("transform", "translate(" + dimensions.width / 2 + 
+                                      "," + dimensions.height / 2 + ")");
+//   }else{
+//     svg = d3.select(config.el).append("svg")
+//         .attr("width", dimensions.width)
+//         .attr("height", dimensions.height)
+//         .style("background-color", "white")
+//             .append("g")
+//             .attr("transform", "translate(" + dimensions.width / 2 + 
+//                                         "," + dimensions.height / 2 + ")");
+//   }
 
   var g = svg.selectAll(".arc")
       .data(pie(data))
