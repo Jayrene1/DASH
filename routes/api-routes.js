@@ -63,6 +63,24 @@ module.exports = function(app) {
         res.json(result);
       });
     });
+
+    app.get("/api/datasets/:id", function(req, res) {
+      db.datasets.findOne({
+        where: {
+          id: req.params.id
+        }
+      }).then(function(result) {
+        console.log(result);
+        res.json(result);
+      });
+    });
+
+    app.post("/api/datasets", function(req, res) {
+      console.log(req.body);
+      db.datasets.create({
+        json_data: req.body,
+      }).then(function(dbDatasets) {
+        res.json(dbDatasets);
+      });
+    });
   };
-  
-    
