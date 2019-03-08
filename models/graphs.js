@@ -11,9 +11,7 @@ module.exports = function(sequelize, DataTypes) {
 	});
 
 	Graph.associate = function(models) {
-		// We're saying that a Post should belong to an Author
-		// A Post can't be created without an Author due to the foreign key constraint
-		Graph.belongsTo(models.dashboards, {
+		Graph.belongsTo(models.datasets, {
 		  foreignKey: {
 			allowNull: false
 		  }
