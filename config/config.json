@@ -1,11 +1,7 @@
 {
   "development": {
     "username": "root",
-<<<<<<< HEAD
-    "password": "11243",
-=======
     "password": "siviradc",
->>>>>>> 89196261e8db80703eb8ec65c8a14ace6f45d0a0
     "database": "dash_db",
     "host": "127.0.0.1",
     "dialect": "mysql"
