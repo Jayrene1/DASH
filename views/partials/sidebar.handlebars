@@ -41,6 +41,19 @@
                     <p>My Dashboards</p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="sign-out" href="/">
+                    <i class="material-icons">exit_to_app</i>
+                    <p>Sign Out</p>
+                </a>
+            </li>
         </ul>
+    {{#if create}}
+        <div class="my-5 text-center">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#chart-form">
+            Create Chart
+          </button> 
+        </div>
+    {{/if}}
     </div>
 </div>
