@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('users', {
+	var User = sequelize.define('users', {
 		username: {
-			type: DataTypes.STRING(48),
+			type: DataTypes.STRING(24),
 			allowNull: false
 		},
 		email: {
@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		},
 		password: {
-			type: DataTypes.STRING(48),
+			type: DataTypes.STRING(24),
 			allowNull: false
         },
         dashboard_id: {
@@ -17,4 +17,17 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		}
 	});
+
+	User.associate = function(models) {
+    // We're saying that a Post should belong to an Author
+    // A Post can't be created without an Author due to the foreign key constraint
+    User.hasMany(models.Dashboard, {
+      foreignKey: {
+        allowNull: false
+      }
+    });
+  };
+
+
+	return User;
 };
