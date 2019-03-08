@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('users', {
 		username: {
-			type: DataTypes.STRING(24),
+			type: DataTypes.STRING(48),
 			allowNull: false
 		},
 		email: {
@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		},
 		password: {
-			type: DataTypes.STRING(24),
+			type: DataTypes.STRING(48),
 			allowNull: false
         },
         dashboard_id: {

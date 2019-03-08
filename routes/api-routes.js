@@ -64,6 +64,24 @@ module.exports = function(app) {
       });
     });
 
+    app.get("/api/users", function(req, res) {
+      db.users.findAll({}).then(function(result) {
+        console.log(result);
+        res.json(result);
+      })
+    });
+
+    app.post("/api/users", function(req, res) {
+      console.log(req.body);
+      db.users.create({
+        username: req.body.uid,
+        email: req.body.email,
+        password: req.body.password
+      }).then(function(dbUsers) {
+        res.json(dbUsers);
+      });
+    });
+
     app.get("/api/datasets/:id", function(req, res) {
       db.datasets.findOne({
         where: {
@@ -78,7 +96,7 @@ module.exports = function(app) {
     app.post("/api/datasets", function(req, res) {
       console.log(req.body);
       db.datasets.create({
-        json_data: req.body,
+        json_data: req.body
       }).then(function(dbDatasets) {
         res.json(dbDatasets);
       });
