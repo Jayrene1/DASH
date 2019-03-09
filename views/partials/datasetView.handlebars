@@ -22,20 +22,29 @@
 <script>
 
 var UserID = localStorage.getItem("userID");
-
+var datasets;
     $(document).ready(function(){
+
         populateDatasets(UserID);
+
+        function populateDatasets(user) {
+
+            var userId = user || "";
+            if (userId) {
+                userId = "/?User_id=" + userId;
+            }
+
+            $.get("/api/datasets" + userId, function(data) {
+                data.forEach(function(set){
+                    var trow = $("<tr>");
+                    var dname = $("<td>").text("DS_"+set.id).appendTo(trow);
+                    var dmod = $("<td>").text(set.updatedAt).appendTo(trow);
+                    $("<tr>").text("-").appendTo(trow);
+                    trow.appendTo("#datasets-body");
+                });
+            });
+        }
     });
 
-    function populateDatasets(user) {
-        console.log(user);
-        var userId = user || "";
-        if (userId) {
-            userId = "/?username=" + userId;
-        }
-        $.get("/api/datasets" + userId, function(data) {
-        console.log("Datasets", data);
-        });
-    }
 
 </script>

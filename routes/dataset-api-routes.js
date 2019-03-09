@@ -5,8 +5,8 @@ module.exports = function(app) {
   app.get("/api/datasets/", function(req, res) {
     var query = {};
     console.log(req.query);
-    if (req.query.username) {
-      query.username = req.query.username;
+    if (req.query.id) {
+      query.id = req.query.id;
     }
     db.Dataset.findAll({
       where: query,
@@ -28,9 +28,7 @@ module.exports = function(app) {
   });
 
   app.post("/api/datasets", function(req, res) {
-    db.Dataset.create({
-      json_data: req.body
-    }).then(function(dbDatasets) {
+    db.Dataset.create(req.body).then(function(dbDatasets) {
       res.json(dbDatasets);
     });
   });

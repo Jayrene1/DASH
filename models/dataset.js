@@ -9,13 +9,14 @@ module.exports = function(sequelize, DataTypes) {
 
 	Dataset.associate = function(models) {
 		Dataset.belongsTo(models.User, {
-			foreignKey: "username"
+			foreignKey: {
+				allowNull: false
+			  }
 			});
-			
-		Dataset.hasMany(models.graphs, {
-			onDelete: "cascade"
-		});
-	};
 
+	Dataset.hasMany(models.graphs, {
+			onDelete: "cascade"
+	});
+	}
 	return Dataset;
 };
