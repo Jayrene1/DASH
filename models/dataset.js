@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-	var Dataset = sequelize.define('datasets', {
+	var Dataset = sequelize.define('Dataset', {
 		json_data: {
 			type: DataTypes.JSON,
 			allowNull: false
@@ -7,10 +7,8 @@ module.exports = function(sequelize, DataTypes) {
 	});
 
 	Dataset.associate = function(models) {
-		Dataset.belongsTo(models.users, {
-			foreignKey: {
-			  allowNull: false
-			}
+		Dataset.belongsTo(models.User, {
+			foreignKey: "username"
 			});
 			
 		Dataset.hasMany(models.graphs, {

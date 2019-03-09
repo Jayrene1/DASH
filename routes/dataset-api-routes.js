@@ -1,8 +1,16 @@
 var db = require("../models");
 
 module.exports = function(app) {
-  app.get("/api/datasets", function(req, res) {
-    db.Dataset.findAll({}).then(function(dbDataset) {
+
+  app.get("/api/datasets/", function(req, res) {
+    var query = {};
+    if (req.query.username) {
+      query.username = req.query.username;
+    }
+    db.Dataset.findAll({
+      where: query,
+      include: [db.User]
+    }).then(function(dbDataset) {
       res.json(dbDataset);
     });
   });
@@ -19,8 +27,7 @@ module.exports = function(app) {
   });
 
   app.post("/api/datasets", function(req, res) {
-    console.log(req.body);
-    db.datasets.create({
+    db.Dataset.create({
       json_data: req.body
     }).then(function(dbDatasets) {
       res.json(dbDatasets);

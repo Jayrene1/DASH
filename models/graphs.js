@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
 	});
 
 	Graph.associate = function(models) {
-		Graph.belongsTo(models.datasets, {
+		Graph.belongsTo(models.Dataset, {
 		  foreignKey: {
 			allowNull: false
 		  }

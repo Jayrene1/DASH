@@ -16,12 +16,12 @@ $(document).ready(function() {
     var userData = {
         email: $('#email').val(),
         password: $('#password').val(),
-        uid: 0
+        username: 0
     };
 	auth.createUserWithEmailAndPassword(userData.email, userData.password)
 	.then(function(user){
         console.log(user);
-        userData.uid = user.user.uid;
+        userData.username = user.user.uid;
         localStorage.setItem('userID', user.user.uid.toString());
         $.post("api/users", userData)
         .then(function() {

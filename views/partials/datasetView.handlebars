@@ -27,3 +27,24 @@
     </div>
     
 </div>
+<script>
+
+var UserID = localStorage.getItem("userID");
+
+    $(document).ready(function(){
+        populateDatasets(UserID);
+    });
+
+    function populateDatasets(user) {
+        console.log(user);
+        var userId = user || "";
+        if (userId) {
+            userId = "/?username=" + userId;
+            console.log(userId);
+        }
+        $.get("/api/datasets" + userId, function(data) {
+        console.log("Datasets", data);
+        });
+    }
+
+</script>

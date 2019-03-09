@@ -187,9 +187,9 @@ function submitDataset(parsedData, headers) {
     var dataset = {
         headers:headers,
         data: parsedData,
-        userId: UserId
+        username: UserID
     };
-    console.log(dataset);
+    console.log(dataset.username);
   $.post("/api/datasets", dataset, function() {
     console.log("dataset stored");
   });
