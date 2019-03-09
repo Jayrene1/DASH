@@ -11,7 +11,11 @@ module.exports = function(sequelize, DataTypes) {
 			foreignKey: {
 			  allowNull: false
 			}
-		  });
+			});
+			
+		Dataset.hasMany(models.graphs, {
+			onDelete: "cascade"
+		});
 	};
 
 	return Dataset;
