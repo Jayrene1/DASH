@@ -52,8 +52,8 @@ $(document).ready(function() {
 
       for (var i = 0; i < json.length; i++) {
         var graphDataPoint = {};
-        graphDataPoint[chart.config.xprop] = json[i][chart.config.xprop];
-        graphDataPoint[chart.config.yprop] = json[i][chart.config.yprop];
+        graphDataPoint[chart.config.xprop] = json[i][chart.config.xprop].trim();
+        graphDataPoint[chart.config.yprop] = json[i][chart.config.yprop].trim();
         chart.data.push(graphDataPoint);
       }
       console.log(chart);
