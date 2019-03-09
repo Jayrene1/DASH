@@ -43,4 +43,16 @@ module.exports = function(app) {
       res.json(dbDataset);
     });
   });
+
+  app.put("/api/datasets/:id", function(req, res) {
+    db.Post.update(
+      req.body,
+      {
+        where: {
+          id: req.body.id
+        }
+      }).then(function(dbPost) {
+      res.json(dbPost);
+    });
+  });
 };
