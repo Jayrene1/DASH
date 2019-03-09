@@ -57,7 +57,7 @@
                 <button type="button" class="btn btn-primary step step-5" data-step="6" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
 
                 <button type="button" class="btn btn-primary step step-7" data-step="7" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
-                <button type="button" class="btn btn-primary step step-7" data-step="7" data-dismiss="modal">Save & Quit</button>
+                <button type="button" class="btn btn-primary step step-7" data-step="7" onclick="submitDataset(parsedData, headers)" data-dismiss="modal">Save & Quit</button>
 
             </div>
         </div>
@@ -94,6 +94,8 @@ var Config = function(head) {
 };
 var parsedData;
 var headers = [];
+var UserID = localStorage.getItem("userID");
+
 
 uploadEvent = function(){
     sendEvent('#demo-modal-3', 2);
@@ -144,7 +146,7 @@ headerCheck = function(boo){
 
 buildPreviewTable = function(){
 
-    var table = $("<table>").addClass("text-center my-3").css("margin","0 auto");
+    var table = $("<table>").addClass("text-center table table-responsive my-3").css("margin","0 auto");
     var thead = $("<thead>");
     var theadRow = $("<tr>");
     var tbody = $("<tbody>");
@@ -158,13 +160,10 @@ buildPreviewTable = function(){
 
     for (var k=0; k<5; k++){
         var row = Object.assign({},parsedData[k]);
-        console.log(row);
         var tbodyRow = $("<tr>");
         for (var l=0; l<headers.length; l++){
             var key = headers[l];
-            console.log(key);
             var datum = $("<td>").text(row[key]).appendTo(tbodyRow);
-            console.log(datum);
         }
         tbodyRow.appendTo(tbody);
     }
@@ -182,6 +181,19 @@ verifyHeaders = function(){
     });
 
 };
+
+function submitDataset(parsedData, headers) {
+    console.log("Starting Upload");
+    var dataset = {
+        headers:headers,
+        data: parsedData,
+        userId: UserId
+    };
+    console.log(dataset);
+  $.post("/api/datasets", dataset, function() {
+    console.log("dataset stored");
+  });
+}
 
 +function($) {
     'use strict';

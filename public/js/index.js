@@ -6,7 +6,6 @@ var config = {
     storageBucket: "dash-jayrene1.appspot.com",
     messagingSenderId: "259766590514"
   };
-
   firebase.initializeApp(config);
 
   var auth = firebase.auth();
@@ -23,6 +22,7 @@ $(document).ready(function() {
 	.then(function(user){
         console.log(user);
         userData.uid = user.user.uid;
+        localStorage.setItem('userID', user.user.uid.toString());
         $.post("api/users", userData)
         .then(function() {
             window.location.href = "datasets"; //redirects user to datasets page
