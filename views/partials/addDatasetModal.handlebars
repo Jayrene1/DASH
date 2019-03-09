@@ -34,8 +34,9 @@
                 please specify headers for your data
             </div>
 
-            <div class="modal-body step-7 data-step text-center" data-step="7">
+            <div class="modal-body step-7 data-step text-center" data-step="7" id="verifyData">
                 please verify this output. click "Save & Quit" when complete.
+                <div class="justify-content-center" id="dataViewer"></div>
             </div>
 
             <div class="modal-footer">
@@ -92,6 +93,7 @@ var Config = function(head) {
 	this.delimitersToGuess= [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP];
 };
 var parsedData;
+var headers = [];
 
 uploadEvent = function(){
     sendEvent('#demo-modal-3', 2);
@@ -123,15 +125,15 @@ headerCheck = function(boo){
     if (boo){
         Config.prototype.complete = function(results,file){
             parsedData = results.data;
-            console.log(parsedData);
-            //buildPreviewTable();
-            sendEvent('#demo-modal-3', 6);
+            headers = results.meta.fields;
+            buildPreviewTable();
+            sendEvent('#demo-modal-3', 7);
         }
         var config = new Config(true);
         Papa.parse(inputData,config);   
     }
     else{
-        config.prototype.complete = function(results,file){
+        Config.prototype.complete = function(results,file){
             parsedData = results.data;
             verifyHeaders();
         }
@@ -142,38 +144,33 @@ headerCheck = function(boo){
 
 buildPreviewTable = function(){
 
-    var table = $("<table>");
+    var table = $("<table>").addClass("text-center my-3").css("margin","0 auto");
     var thead = $("<thead>");
     var theadRow = $("<tr>");
     var tbody = $("<tbody>");
 
-    var lines = parsedData;
-    var firstFive = [];
-    for (var i=0; i<5; i++){
-        firstFive.push(lines[i]);
-    }
-
-    var firstRow = firstFive[0].split(',');
-    var columns = firstRow.length;
-
-    for (var j=0; j<columns; j++){
-        var headerLabel = $("<th>").attr("scope","col").text(firstRow[j]).appendTo(theadRow);
+    for (var j=0; j<headers.length; j++){
+        var headerLabel = $("<th>").attr("scope","col").text(headers[j]).appendTo(theadRow);
     }
 
     theadRow.appendTo(thead);
     thead.appendTo(table);
 
-    for (var k=1; k<5; k++){
-        var row = firstFive[k].split(',');
+    for (var k=0; k<5; k++){
+        var row = Object.assign({},parsedData[k]);
+        console.log(row);
         var tbodyRow = $("<tr>");
-        for (var l=0; l<columns; l++){
-            var datum = $("<td>").text(row[l]).appendTo(tbodyRow);
+        for (var l=0; l<headers.length; l++){
+            var key = headers[l];
+            console.log(key);
+            var datum = $("<td>").text(row[key]).appendTo(tbodyRow);
+            console.log(datum);
         }
         tbodyRow.appendTo(tbody);
     }
 
     tbody.appendTo(table);
-    return table; 
+    table.appendTo("#dataViewer");
 };
 
 verifyHeaders = function(){
