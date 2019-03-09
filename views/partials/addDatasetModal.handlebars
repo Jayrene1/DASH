@@ -30,8 +30,12 @@
                 {{> headerQuestion}}
             </div>
 
-            <div class="modal-body step-6 data-step text-center" data-step="5">
-                please verify this output
+            <div class="modal-body step-6 data-step text-center" data-step="6">
+                please specify headers for your data
+            </div>
+
+            <div class="modal-body step-7 data-step text-center" data-step="7">
+                please verify this output. click "Save & Quit" when complete.
             </div>
 
             <div class="modal-footer">
@@ -39,7 +43,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 
                 <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
-                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="parseFile()">Continue</button>
 
                 <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
                 <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
@@ -49,7 +53,10 @@
 
                 <button type="button" class="btn btn-primary step step-5" data-step="5" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
 
-                <button type="button" class="btn btn-primary step step-5" data-step="5" data-dismiss="modal">Save & Quit</button>
+                <button type="button" class="btn btn-primary step step-5" data-step="6" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+
+                <button type="button" class="btn btn-primary step step-7" data-step="7" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
+                <button type="button" class="btn btn-primary step step-7" data-step="7" data-dismiss="modal">Save & Quit</button>
 
             </div>
         </div>
@@ -61,29 +68,28 @@
 <script>
 
 var inputData;
-var config = {
-	delimiter: "",	// auto-detect
-	newline: "",	// auto-detect
-	quoteChar: '"',
-	escapeChar: '"',
-	header: false,
-	transformHeader: undefined,
-	dynamicTyping: false,
-	preview: 0,
-	encoding: "",
-	worker: false,
-	comments: false,
-	step: undefined,
-	complete: undefined,
-	error: undefined,
-	download: false,
-	skipEmptyLines: false,
-	chunk: undefined,
-	fastMode: undefined,
-	beforeFirstChunk: undefined,
-	withCredentials: undefined,
-	transform: undefined,
-	delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP]
+var Config = function(head) {
+	this.delimiter= "";	// auto-detect
+	this.newline= "";	// auto-detect
+	this.quoteChar= '"';
+	this.escapeChar= '"';
+	this.header= head;
+	this.transformHeader= undefined;
+	this.dynamicTyping= false;
+	this.preview= 0;
+	this.encoding= "";
+	this.worker= false;
+	this.comments= false;
+	this.step= undefined;
+	this.error= undefined;
+	this.download= false;
+	this.skipEmptyLines= false;
+	this.chunk= undefined;
+	this.fastMode= undefined;
+	this.beforeFirstChunk= undefined;
+	this.withCredentials= undefined;
+	this.transform= undefined;
+	this.delimitersToGuess= [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP];
 };
 var parsedData;
 
@@ -109,33 +115,39 @@ parseText = function(){
 };
 
 parseFile = function(){
-    console.log($("#file"));
     inputData = $("#file").prop('files')[0];
     sendEvent('#demo-modal-3', 5);
 };
 
 headerCheck = function(boo){
     if (boo){
-        config.header = true;
-        var result = Papa.parse(inputData,config);
-        parsedData = result.data;
-        buildPreviewTable(boo);
+        Config.prototype.complete = function(results,file){
+            parsedData = results.data;
+            console.log(parsedData);
+            //buildPreviewTable();
+            sendEvent('#demo-modal-3', 6);
+        }
+        var config = new Config(true);
+        Papa.parse(inputData,config);   
     }
     else{
-        var result = Papa.parse(inputData,config);
-        parsedData = result.data;
-        verifyHeaders();
+        config.prototype.complete = function(results,file){
+            parsedData = results.data;
+            verifyHeaders();
+        }
+        var config = new Config(true);
+        Papa.parse(inputData,config);
     }
 };
 
-buildPreviewTable = function(boo){
+buildPreviewTable = function(){
 
-    {{!-- var table = $("<table>");
+    var table = $("<table>");
     var thead = $("<thead>");
     var theadRow = $("<tr>");
     var tbody = $("<tbody>");
 
-    var lines = 
+    var lines = parsedData;
     var firstFive = [];
     for (var i=0; i<5; i++){
         firstFive.push(lines[i]);
@@ -161,7 +173,7 @@ buildPreviewTable = function(boo){
     }
 
     tbody.appendTo(table);
-    return table; --}}
+    return table; 
 };
 
 verifyHeaders = function(){
