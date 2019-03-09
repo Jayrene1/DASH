@@ -13,7 +13,7 @@ module.exports = function(app) {
     res.render('index', { title: 'Home Page' });
   });
 
-  app.get('/createdash', (req, res) => {
+   app.get('/createdash', (req, res) => {
     res.render('createdash', { title: 'Create Dash', create: true });
   });
 
