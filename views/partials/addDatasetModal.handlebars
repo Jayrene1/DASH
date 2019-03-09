@@ -7,8 +7,8 @@
                 <h3>please select your data upload option</h3>
                 <button type="button" class="btn btn-primary" onclick="uploadEvent()">Upload a File</button>
                 <br>
-                <button type="button" class="btn btn-primary" onclick="cloneEvent()">Clone from Existing</button>
-                <br>
+                {{!-- <button type="button" class="btn btn-primary" onclick="cloneEvent()">Clone from Existing</button>
+                <br> --}}
                 <button type="button" class="btn btn-primary" onclick="createDataEvent()">Manually Add Data</button>
                 <br>
 
@@ -67,7 +67,7 @@
 <span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" data-toggle="modal" data-target="#demo-modal-3"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
 
 <script>
-
+var dsnum = 1;
 var inputData;
 var Config = function(head) {
 	this.delimiter= "";	// auto-detect
@@ -191,7 +191,12 @@ function submitDataset(parsedData, headers) {
     };
     console.log(dataset.username);
   $.post("/api/datasets", dataset, function() {
-    console.log("dataset stored");
+        console.log("dataset stored");
+        var trow = $("<tr>");
+        var dname = $("<td>").text("DS_"+dsnum).appendTo(trow);
+        var dmod = $("<td>").text("0 days ago").appendTo(trow);
+        $("<tr>").text("-").appendTo(trow);
+        trow.appendTo("#datasets-body");
   });
 }
 

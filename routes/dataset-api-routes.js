@@ -4,6 +4,7 @@ module.exports = function(app) {
 
   app.get("/api/datasets/", function(req, res) {
     var query = {};
+    console.log(req.query);
     if (req.query.username) {
       query.username = req.query.username;
     }

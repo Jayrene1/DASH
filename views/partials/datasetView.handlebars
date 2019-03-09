@@ -10,16 +10,11 @@
             <thead>
                 <tr>
                     <th scope="col">Dataset Name</th>
-                    <th scope="col">Number of Entries</th>
                     <th scope="col">Last Modified</th>
                     <th scope="col">Used In</th>
                 </tr>
             </thead>
-            <tbody>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
+            <tbody id="datasets-body">
             </tbody>
         </table>
 
@@ -40,7 +35,6 @@ var UserID = localStorage.getItem("userID");
         var userId = user || "";
         if (userId) {
             userId = "/?username=" + userId;
-            console.log(userId);
         }
         $.get("/api/datasets" + userId, function(data) {
         console.log("Datasets", data);
