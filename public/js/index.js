@@ -11,6 +11,10 @@ var config = {
   var auth = firebase.auth();
 $(document).ready(function() {
 
+  localStorage.setItem('dataset-count', "0");
+  localStorage.setItem('dashboard-count', "0");
+  localStorage.setItem('graph-count', "0");
+
   $('#create-user').on('submit', function(event){
     event.preventDefault();
     var userData = {
@@ -20,19 +24,29 @@ $(document).ready(function() {
     };
 	auth.createUserWithEmailAndPassword(userData.email, userData.password)
 	.then(function(user){
-        console.log(user);
         userData.username = user.user.uid;
-        localStorage.setItem('userID', user.user.uid.toString());
+        localStorage.setItem('username', user.user.uid.toString());
         $.post("api/users", userData)
         .then(function() {
-            window.location.href = "datasets"; //redirects user to datasets page
+          getUsers();
         });
-  
-         
+        
 	})
 	.catch(function(error){
 		alert(error);
-	});
+  });
+  
+  function getUsers() {
+    $.get("/api/users", function(data) {
+      var uname = localStorage.getItem("username");
+      for (var i=0; i < data.length; i++){
+        if (data[i].username == uname){
+          localStorage.setItem('userID', data[i].id.toString());
+          window.location.href = "datasets";
+        }
+      }
+    });
+  }
 	
   });
 

@@ -1,7 +1,20 @@
 <h3>Which set do you want to clone?</h3>
-<select>
-    <option value="1">Set 1</option>
-    <option value="2">Set 2</option>
-    <option value="3">Set 3</option>
-    <option value="4">Set 4</option>
+<select id="dataset-options">
 </select>
+<script>
+
+    var userId = "/?User_id=" + localStorage.getItem("userID");
+
+    $.get("/api/datasets" + userId, function(data) {
+        var i = 1;
+
+        datasets = data;
+
+        data.forEach(function(set){
+            var datasetOption = $("<option>").attr("value",i).text("DS_"+i).appendTo("#dataset-options");
+            i++;
+        });
+    });
+
+
+</script>
