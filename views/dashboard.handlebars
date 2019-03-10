@@ -26,116 +26,6 @@
         </div>
         <div id="test-chart"></div>
 
-        {{!-- <div class="row">
-          <div id="container"></div>
-        </div> --}}
-          {{!-- <div class="col-md-4">
-            <div class="card card-chart">
-              <div class="card-header card-header-success">
-                <div class="ct-chart" id="dailySalesChart"></div>
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Dash X</h4>
-                <p class="card-category">
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card card-chart">
-              <div class="card-header card-header-success">
-                <div class="ct-chart" id="dailySalesChart"></div>
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Dash X</h4>
-                <p class="card-category">
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card card-chart">
-              <div class="card-header card-header-success">
-                <div class="ct-chart" id="dailySalesChart"></div>
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Dash X</h4>
-                <p class="card-category">
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <div class="card card-chart">
-              <div class="card-header card-header-success">
-                <div class="ct-chart" id="dailySalesChart"></div>
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Dash X</h4>
-                <p class="card-category">
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card card-chart">
-              <div class="card-header card-header-success">
-                <div class="ct-chart" id="dailySalesChart"></div>
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Dash X</h4>
-                <p class="card-category">
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card card-chart">
-              <div class="card-header card-header-success">
-                <div class="ct-chart" id="dailySalesChart"></div>
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Dash X</h4>
-                <p class="card-category">
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> --}}
-
     {{> createchart}}
     {{> footer}}
   </div>
@@ -144,33 +34,52 @@
 
 
 <script>
+  var cardNum = $("#myDashboards").children().length;
+  
+  jQuery.fn.swapWith = function(to) {
+    return this.each(function() {
+        var copy_to = $(to).clone(true);
+        var copy_from = $(this).clone(true);
+        $(to).replaceWith(copy_from);
+        $(this).replaceWith(copy_to);
+    });
+};
 
 function addCard() {
-  
-    var card = $("<div>").addClass("card").css({"background": "rgba(221,221,221,0.1)", "max-width": "24%", "min-height": "300px"});
+    var cardWrapper = $("<a>").attr({
+      "href":"#!",
+      "data-toggle":"modal",
+      "data-target":"#chart-form"
+      }).css({"width":"24%", "max-width": "24%", "max-height": "330px"});
+    var card = $("<div>").addClass("card").attr("id","card_"+cardNum).css({"background": "rgba(221,221,221,0.1)", "min-width": "100%", "min-height": "300px"});
     var cardHeader = $("<div>").addClass("card-header card-header-success");
-    var ctchart = $("<div>").addClass("ct-chart").attr("id","dailySalesChart").appendTo(cardHeader);
+    var cardName = $("<h4>").addClass("card-title").text("Dash "+cardNum ).appendTo(cardHeader);
   
     cardHeader.appendTo(card);
   
     var cardBody = $("<div>").addClass("card-body");
-    var cardName = $("<h4>").addClass("card-title").text("Dash X").appendTo(cardBody);
-    var cardCat = $("<p>").addClass("card-category").appendTo(cardBody);
+    if (cardNum > 1){
+          var ctchart = $("#dailySalesChart").swapWith("#dailySalesChart").appendTo(cardBody);
+    }
+    else{
+      var ctchart = $("<div>").addClass("ct-chart bg-secondary").attr("id","dailySalesChart").appendTo(cardBody);
+    }
+
     cardBody.appendTo(card);
   
-    var cardFoot = $("<div>").addClass("card-footer");
+    {{!-- var cardFoot = $("<div>").addClass("card-footer");
     var stats = $("<div>").addClass("stats").appendTo(cardFoot);
   
-    cardFoot.appendTo(card);
-<<<<<<< HEAD
-    card.appendTo("#myDashboards");
-=======
-    card.appendTo(colClass);
-  
-    colClass.appendTo("#addcard");
->>>>>>> 182ba546589e92433bc564a549f905fc7f304b9b
+    cardFoot.appendTo(card); --}}
+    card.appendTo(cardWrapper);
+    cardWrapper.appendTo("#myDashboards")
+    cardNum++;
+    window.dispatchEvent(new Event('resize'));
   };
 
+$(document).on("click","#dailySalesChart",function(){
+  
+});
 
  $(document).ready(function () {
     $().ready(function () {
