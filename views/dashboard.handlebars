@@ -18,16 +18,17 @@
               <div class="card-header card-header-primary">
                 <h4 class="card-title">Create Your Dashboard</h4>
               </div>
-              <div class="card-body">
-                 <span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" onclick="addCard()"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+              <div id="myDashboards" class="card-body d-flex justify-content-around flex-wrap">
+                 <span class=" col-12 table-add float-left mb-3 ml-3"><a href="#!" class="text-success" onclick="addCard()"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
               </div>
             </div>
           </div>
         </div>
         <div id="test-chart"></div>
 
-        <div class="row">
-          <div id="addcard"></div>
+        {{!-- <div class="row">
+          <div id="container"></div>
+        </div> --}}
           {{!-- <div class="col-md-4">
             <div class="card card-chart">
               <div class="card-header card-header-success">
@@ -145,8 +146,8 @@
 <script>
 
 function addCard() {
-    var colClass = $("<div>").addClass("col-md-4");
-    var card = $("<div>").addClass("card card-chart");
+  
+    var card = $("<div>").addClass("card").css({"background": "rgba(221,221,221,0.1)", "max-width": "24%", "min-height": "300px"});
     var cardHeader = $("<div>").addClass("card-header card-header-success");
     var ctchart = $("<div>").addClass("ct-chart").attr("id","dailySalesChart").appendTo(cardHeader);
   
@@ -161,9 +162,7 @@ function addCard() {
     var stats = $("<div>").addClass("stats").appendTo(cardFoot);
   
     cardFoot.appendTo(card);
-    card.appendTo(colClass);
-  
-    colClass.appendTo("#container");
+    card.appendTo("#myDashboards");
   };
 
 
