@@ -8,7 +8,7 @@
     $.get("/api/datasets" + userId, function(data) {
         var i = 1;
 
-        datasets = Object.assign({},data);
+        datasets = data;
 
         data.forEach(function(set){
             var datasetOption = $("<option>").attr("value",i).text("DS_"+i).appendTo("#dataset-options");

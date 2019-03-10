@@ -47,7 +47,7 @@
                 <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="parseFile()" id="await-upload">Continue</button>
 
                 <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
-                <button type="button" class="btn btn-primary step step-3" data-step="7" onclick="cloneDataset(datasets[$('#dataset-options').val()])" data-dismiss="modal">Save & Quit</button>
+                <button type="button" class="btn btn-primary step step-3" data-step="7" onclick="cloneDataset(datasets[$('#dataset-options').val()-1])" data-dismiss="modal">Save & Quit</button>
 
                 <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
                 <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="parseText()">Continue</button>
@@ -67,7 +67,7 @@
 <span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" data-toggle="modal" data-target="#demo-modal-3" onclick="sendEvent('#demo-modal-3', 1)"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
 
 <script>
-var dsnum = parseInt(localStorage.getItem("dataset-count")) + 2;
+var dsnum = parseInt(localStorage.getItem("dataset-count")) + 1;
 var inputData;
 var Config = function(head) {
 	this.delimiter= "";	// auto-detect
@@ -149,8 +149,6 @@ headerCheck = function(boo){
 
 buildPreviewTable = function(arrayBool){
 
-    console.log(parsedData);
-
     var table = $("<table>").addClass("text-center table my-3").css("margin","0 auto");
     var thead = $("<thead>");
     var theadRow = $("<tr>");
@@ -220,16 +218,17 @@ function submitDataset(parsedData, headers) {
         }).addClass("btn btn-danger").text("Edit").appendTo(trow);
         trow.appendTo("#datasets-body");
         dsnum++;
-        reset();
+        window.location.href = "datasets";
   });
 }
 
 function cloneDataset(set) {
+    console.log(set);
+    console.log(datasets);
     var dataset = {
         json_data: set["json_data"],
         UserId: set["UserId"]
     };
-    console.log(dataset);
   $.post("/api/datasets", dataset, function() {
         var trow = $("<tr>");
         var dname = $("<td>").text("DS_"+dsnum).appendTo(trow);
@@ -243,6 +242,7 @@ function cloneDataset(set) {
         trow.appendTo("#datasets-body");
         dsnum++;
         reset();
+        window.location.href = "datasets";
   });
 }
 

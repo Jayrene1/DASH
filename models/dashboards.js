@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-	var Dashboard = sequelize.define('dashboards', {
+	var Dashboard = sequelize.define('Dashboard', {
 		name: {
 			type: DataTypes.STRING,
 			allowNull: false
@@ -7,13 +7,13 @@ module.exports = function(sequelize, DataTypes) {
 	});
 
 	Dashboard.associate = function(models) {
-		Dashboard.belongsTo(models.users, {
+		Dashboard.belongsTo(models.User, {
 			foreignKey: {
 				allowNull: false
 			  }
 			});
 
-	Dashboard.hasMany(models.graphs, {
+	Dashboard.hasMany(models.Graph, {
 			onDelete: "cascade"
 	});
 	}
