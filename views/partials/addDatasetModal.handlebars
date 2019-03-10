@@ -7,8 +7,8 @@
                 <h3>please select your data upload option</h3>
                 <button type="button" class="btn btn-primary" onclick="uploadEvent()">Upload a File</button>
                 <br>
-                {{!-- <button type="button" class="btn btn-primary" onclick="cloneEvent()">Clone from Existing</button>
-                <br> --}}
+                <button type="button" class="btn btn-primary" onclick="cloneEvent()">Clone from Existing</button>
+                <br>
                 <button type="button" class="btn btn-primary" onclick="createDataEvent()">Manually Add Data</button>
                 <br>
 
@@ -36,7 +36,7 @@
 
             <div class="modal-body step-7 data-step text-center" data-step="7" id="verifyData">
                 please verify this output. click "Save & Quit" when complete.
-                <div class="justify-content-center" id="dataViewer"></div>
+                <div class="justify-content-center text-center" id="dataViewer"></div>
             </div>
 
             <div class="modal-footer">
@@ -44,10 +44,10 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 
                 <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
-                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="parseFile()">Continue</button>
+                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="parseFile()" id="await-upload">Continue</button>
 
                 <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
-                <button type="button" class="btn btn-primary step step-3" data-step="3" onclick="sendEvent('#demo-modal-3', 5)">Continue</button>
+                <button type="button" class="btn btn-primary step step-3" data-step="7" onclick="cloneDataset(datasets[$('#dataset-options').val()-1])" data-dismiss="modal">Save & Quit</button>
 
                 <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="sendEvent('#demo-modal-3', 1)">Back</button>
                 <button type="button" class="btn btn-primary step step-4" data-step="4" onclick="parseText()">Continue</button>
@@ -64,10 +64,10 @@
     </div>
 </form>
 
-<span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" data-toggle="modal" data-target="#demo-modal-3"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+<span class="table-add float-left mb-3 ml-3"><a href="#!" class="text-success" data-toggle="modal" data-target="#demo-modal-3" onclick="sendEvent('#demo-modal-3', 1)"><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
 
 <script>
-var dsnum = 1;
+var dsnum = parseInt(localStorage.getItem("dataset-count")) + 1;
 var inputData;
 var Config = function(head) {
 	this.delimiter= "";	// auto-detect
@@ -95,6 +95,8 @@ var Config = function(head) {
 var parsedData;
 var headers = [];
 var UserID = localStorage.getItem("userID");
+var colCount = 0;
+var datasets;
 
 
 uploadEvent = function(){
@@ -114,7 +116,8 @@ sendEvent = function(sel, step) {
 };
 
 parseText = function(){
-    inputData = $("#manualDataField").text();
+    inputData = $("#manualDataField").val();
+    console.log(inputData);
     sendEvent('#demo-modal-3', 5);
 };
 
@@ -128,8 +131,7 @@ headerCheck = function(boo){
         Config.prototype.complete = function(results,file){
             parsedData = results.data;
             headers = results.meta.fields;
-            buildPreviewTable();
-            sendEvent('#demo-modal-3', 7);
+            buildPreviewTable(false);
         }
         var config = new Config(true);
         Papa.parse(inputData,config);   
@@ -139,14 +141,15 @@ headerCheck = function(boo){
             parsedData = results.data;
             verifyHeaders();
         }
-        var config = new Config(true);
+        var config = new Config(false);
         Papa.parse(inputData,config);
+        
     }
 };
 
-buildPreviewTable = function(){
+buildPreviewTable = function(arrayBool){
 
-    var table = $("<table>").addClass("text-center table table-responsive my-3").css("margin","0 auto");
+    var table = $("<table>").addClass("text-center table my-3").css("margin","0 auto");
     var thead = $("<thead>");
     var theadRow = $("<tr>");
     var tbody = $("<tbody>");
@@ -157,49 +160,98 @@ buildPreviewTable = function(){
 
     theadRow.appendTo(thead);
     thead.appendTo(table);
-
-    for (var k=0; k<5; k++){
-        var row = Object.assign({},parsedData[k]);
-        var tbodyRow = $("<tr>");
-        for (var l=0; l<headers.length; l++){
-            var key = headers[l];
-            var datum = $("<td>").text(row[key]).appendTo(tbodyRow);
+    if (!arrayBool){
+        for (var k=0; k<5; k++){
+            var row = Object.assign({},parsedData[k]);
+            var tbodyRow = $("<tr>");
+            for (var l=0; l<headers.length; l++){
+                var key = headers[l];
+                var datum = $("<td>").text(row[key]).appendTo(tbodyRow);
+            }
+            tbodyRow.appendTo(tbody);
         }
-        tbodyRow.appendTo(tbody);
     }
+    else{
+        for (var k=0; k<5; k++){
+            var row = parsedData[k];
+            var tbodyRow = $("<tr>");
+            for (var l=0; l<headers.length; l++){
+                var datum = $("<td>").text(row[l]).appendTo(tbodyRow);
+            }
+            tbodyRow.appendTo(tbody);
+        }
+    }
+    
 
     tbody.appendTo(table);
     table.appendTo("#dataViewer");
+    sendEvent('#demo-modal-3', 7);
 };
 
 verifyHeaders = function(){
-    $("#verifyHeaders").children().remove();
-    var label = $("<p>").text("For each column, a sample of data will be displayed. Please define a header for that column and click 'next' or 'back' to return to the beginning.").appendTo("#verifyHeaders");
-    var newHeader = $("<input>").attr({
-        "type":"text",
-        "class":"text=center"
-    });
-
+    colCount = Object.keys(parsedData[0]).length;
+    for(var i=0; i<colCount; i++){
+        headers.push("Header "+i);
+    }
+    buildPreviewTable(true);
 };
 
 function submitDataset(parsedData, headers) {
-    console.log("Starting Upload");
-    var dataset = {
-        headers:headers,
-        data: parsedData,
-        username: UserID
+    $("#dataViewer").children().remove();
+    var json = {
+        headers: headers,
+        data: parsedData
     };
-    console.log(dataset.username);
+    var dataset = {
+        json_data: json,
+        UserId: parseInt(UserID)
+    };
   $.post("/api/datasets", dataset, function() {
-        console.log("dataset stored");
         var trow = $("<tr>");
         var dname = $("<td>").text("DS_"+dsnum).appendTo(trow);
-        var dmod = $("<td>").text("0 days ago").appendTo(trow);
-        $("<tr>").text("-").appendTo(trow);
+        var dmod = $("<td>").text("0 minutes ago").appendTo(trow);
+        $("<td>").text("-").appendTo(trow);
+        var editButton = $("<button>").attr({
+                    "type":"button",
+                    "id":"edit"+dsnum,
+                    "onclick":"editDataset()"
+        }).addClass("btn btn-danger").text("Edit").appendTo(trow);
         trow.appendTo("#datasets-body");
         dsnum++;
+        window.location.href = "datasets";
   });
 }
+
+function cloneDataset(set) {
+    console.log(set);
+    console.log(datasets);
+    var dataset = {
+        json_data: set["json_data"],
+        UserId: set["UserId"]
+    };
+  $.post("/api/datasets", dataset, function() {
+        var trow = $("<tr>");
+        var dname = $("<td>").text("DS_"+dsnum).appendTo(trow);
+        var dmod = $("<td>").text("0 minutes ago").appendTo(trow);
+        $("<td>").text("-").appendTo(trow);
+        var editButton = $("<button>").attr({
+                    "type":"button",
+                    "id":"edit"+dsnum,
+                    "onclick":"editDataset()"
+        }).addClass("btn btn-danger").text("Edit").appendTo(trow);
+        trow.appendTo("#datasets-body");
+        dsnum++;
+        reset();
+        window.location.href = "datasets";
+  });
+}
+
+reset = function(){
+    $("#manualDataField").val("");
+    parsedData = {};
+    headers = [];
+    removeUpload();
+};
 
 +function($) {
     'use strict';

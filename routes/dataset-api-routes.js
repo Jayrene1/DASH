@@ -5,8 +5,8 @@ module.exports = function(app) {
   app.get("/api/datasets/", function(req, res) {
     var query = {};
     console.log(req.query);
-    if (req.query.username) {
-      query.username = req.query.username;
+    if (req.query.id) {
+      query.id = req.query.id;
     }
     db.Dataset.findAll({
       where: query,
@@ -28,9 +28,7 @@ module.exports = function(app) {
   });
 
   app.post("/api/datasets", function(req, res) {
-    db.Dataset.create({
-      json_data: req.body
-    }).then(function(dbDatasets) {
+    db.Dataset.create(req.body).then(function(dbDatasets) {
       res.json(dbDatasets);
     });
   });
@@ -43,6 +41,18 @@ module.exports = function(app) {
       }
     }).then(function(dbDataset) {
       res.json(dbDataset);
+    });
+  });
+
+  app.put("/api/datasets/:id", function(req, res) {
+    db.Post.update(
+      req.body,
+      {
+        where: {
+          id: req.body.id
+        }
+      }).then(function(dbPost) {
+      res.json(dbPost);
     });
   });
 };

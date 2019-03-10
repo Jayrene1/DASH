@@ -6,12 +6,13 @@
 
     <div class="card-body">
         {{> addDatasetModal}}
-        <table class="table" id="datasetsTable">
+        <table class="table text-center" id="datasetsTable">
             <thead>
                 <tr>
                     <th scope="col">Dataset Name</th>
                     <th scope="col">Last Modified</th>
                     <th scope="col">Used In</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="datasets-body">
@@ -22,20 +23,39 @@
 <script>
 
 var UserID = localStorage.getItem("userID");
-
+var datasets;
     $(document).ready(function(){
+
         populateDatasets(UserID);
+
+        function populateDatasets(user) {
+
+            var userId = user || "";
+            if (userId) {
+                userId = "/?User_id=" + userId;
+            }
+
+            $.get("/api/datasets" + userId, function(data) {
+                datasets = data;
+                localStorage.setItem("dataset-count",data.length);
+                data.forEach(function(set){
+                    var trow = $("<tr>").addClass("text-center");
+                    var tButtonRow = $("<tr>");
+                    var dname = $("<td>").text("DS_"+set.id).appendTo(trow);
+                    var dmod = $("<td>").text(moment(set.updatedAt).diff(moment(),"minutes")*-1 + " minutes ago").appendTo(trow);
+                    var dused = $("<td>").text("-").appendTo(trow);
+                    var btn = $("<td>");
+                    var editButton = $("<button>").attr({
+                        "type":"button",
+                        "id":"edit"+set.id,
+                        "onclick":"editDataset()"
+                        }).addClass("btn btn-danger float-right").text("Edit").appendTo(btn);
+                    btn.appendTo(trow);
+                    trow.appendTo("#datasets-body");
+                });
+            });
+        }
     });
 
-    function populateDatasets(user) {
-        console.log(user);
-        var userId = user || "";
-        if (userId) {
-            userId = "/?username=" + userId;
-        }
-        $.get("/api/datasets" + userId, function(data) {
-        console.log("Datasets", data);
-        });
-    }
 
 </script>
