@@ -12,6 +12,7 @@
                     <th scope="col">Dataset Name</th>
                     <th scope="col">Last Modified</th>
                     <th scope="col">Used In</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="datasets-body">
@@ -35,11 +36,18 @@ var datasets;
             }
 
             $.get("/api/datasets" + userId, function(data) {
+                localStorage.setItem("dataset-count",data.length);
                 data.forEach(function(set){
                     var trow = $("<tr>");
+                    var tButtonRow = $("<tr>");
                     var dname = $("<td>").text("DS_"+set.id).appendTo(trow);
-                    var dmod = $("<td>").text(set.updatedAt).appendTo(trow);
-                    $("<tr>").text("-").appendTo(trow);
+                    var dmod = $("<td>").text(moment(set.updatedAt).diff(moment(),"minutes")*-1 + " minutes ago").appendTo(trow);
+                    var dused = $("<td>").text("-").appendTo(trow);
+                    var editButton = $("<button>").attr({
+                        "type":"button",
+                        "id":"edit"+set.id,
+                        "onclick":"editDataset()"
+                        }).addClass("btn btn-danger").text("Edit").appendTo(trow);
                     trow.appendTo("#datasets-body");
                 });
             });

@@ -11,6 +11,10 @@ var config = {
   var auth = firebase.auth();
 $(document).ready(function() {
 
+  localStorage.setItem('dataset-count', "0");
+  localStorage.setItem('dashboard-count', "0");
+  localStorage.setItem('graph-count', "0");
+
   $('#create-user').on('submit', function(event){
     event.preventDefault();
     var userData = {
