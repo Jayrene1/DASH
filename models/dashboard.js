@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
 	var Dashboard = sequelize.define('Dashboard', {
-		name: {
+		dash_name: {
 			type: DataTypes.STRING,
 			allowNull: false
 		}
@@ -13,9 +13,9 @@ module.exports = function(sequelize, DataTypes) {
 			  }
 			});
 
-	Dashboard.hasMany(models.Graph, {
-			onDelete: "cascade"
-	});
+		Dashboard.hasMany(models.Graph, {
+				onDelete: "cascade"
+		});
 	}
 	return Dashboard;
 };

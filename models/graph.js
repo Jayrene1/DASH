@@ -4,18 +4,20 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(24),
 			allowNull: false
 		},
-        graph_values: {
+      graph_values: {
 			type: DataTypes.JSON,
 			allowNull: false
 		}
 	});
 
 	Graph.associate = function(models) {
+
 		Graph.belongsTo(models.Dashboard, {
 		  foreignKey: {
 			allowNull: false
 		  }
 		});
+
 	};
 
 	return Graph;
