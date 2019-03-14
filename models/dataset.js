@@ -3,13 +3,6 @@ module.exports = function(sequelize, DataTypes) {
 		json_data: {
 			type: DataTypes.JSON,
 			allowNull: false
-		},
-		source: {
-			type: DataTypes.INTEGER,
-			references: {
-				model: sequelize.models.user,
-				key: 'id'
-			}
 		}
 	});
 
