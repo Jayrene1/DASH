@@ -15,7 +15,8 @@ module.exports = function(sequelize, DataTypes) {
 
 	dataset.associate = function(models) {
 		dataset.belongsTo(models.user, {
-			foreignKey: 'user_id1'
+			foreignKey: 'user_id1',
+			constraints: false
 		  });
 	  };
 	return dataset;
