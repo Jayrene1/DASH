@@ -7,11 +7,7 @@ module.exports = function(sequelize, DataTypes) {
 	});
 
 	dataset.associate = function(models) {
-		dataset.belongsTo(models.user, {
-			foreignKey: {
-				allowNull: false
-			  }
-		  });
+		dataset.belongsTo(models.user);
 	  };
 	return dataset;
   };
