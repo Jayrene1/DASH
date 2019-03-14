@@ -8,39 +8,39 @@ module.exports = function(app) {
     if (req.query.id) {
       query.id = req.query.id;
     }
-    db.Dashboard.findAll({
+    db.dashboard.findAll({
       where: query,
-      include: [db.User]
-    }).then(function(dbDashboard) {
-      res.json(dbDashboard);
+      include: [db.user]
+    }).then(function(dbdashboard) {
+      res.json(dbdashboard);
     });
   });
 
   app.get("/api/dashboards/:id", function(req, res) {
-    // Find one Dashboard with the id in req.params.id and return them to the Dashboard with res.json
-    db.Dashboard.findOne({
+    // Find one dashboard with the id in req.params.id and return them to the dashboard with res.json
+    db.dashboard.findOne({
       where: {
         id: req.params.id
       }
-    }).then(function(dbDashboard) {
-      res.json(dbDashboard);
+    }).then(function(dbdashboard) {
+      res.json(dbdashboard);
     });
   });
 
   app.post("/api/dashboards", function(req, res) {
-    db.Dashboard.create(req.body).then(function(dbdashboards) {
+    db.dashboard.create(req.body).then(function(dbdashboards) {
       res.json(dbdashboards);
     });
   });
 
   app.delete("/api/dashboards/:id", function(req, res) {
-    // Delete the Dashboard with the id available to us in req.params.id
-    db.Dashboard.destroy({
+    // Delete the dashboard with the id available to us in req.params.id
+    db.dashboard.destroy({
       where: {
         id: req.params.id
       }
-    }).then(function(dbDashboard) {
-      res.json(dbDashboard);
+    }).then(function(dbdashboard) {
+      res.json(dbdashboard);
     });
   });
 };

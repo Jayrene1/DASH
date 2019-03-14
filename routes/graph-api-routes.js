@@ -2,19 +2,26 @@ var db = require("../models");
 
 module.exports = function(app) {
   app.get("/api/graphs", function(req, res) {
-    db.Graph.findAll({}).then(function(dbGraph) {
-      res.json(dbGraph);
+    var query = {};
+    if (req.query.id) {
+      query.id = req.query.id;
+    }
+    db.graph.findAll({
+      where: query,
+      include: [db.dashboard] 
+    }).then(function(dbdataset) {
+      res.json(dbdataset);
     });
   });
 
   app.get("/api/graphs/:id", function(req, res) {
-    // Find one Graph with the id in req.params.id and return them to the Graph with res.json
-    db.Graph.findOne({
+    // Find one graph with the id in req.params.id and return them to the graph with res.json
+    db.graph.findOne({
       where: {
         id: req.params.id
       }
-    }).then(function(dbGraph) {
-      res.json(dbGraph);
+    }).then(function(dbgraph) {
+      res.json(dbgraph);
     });
   });
 
@@ -31,13 +38,13 @@ module.exports = function(app) {
   });
 
   app.delete("/api/graphs/:id", function(req, res) {
-    // Delete the Graph with the id available to us in req.params.id
-    db.Graph.destroy({
+    // Delete the graph with the id available to us in req.params.id
+    db.graph.destroy({
       where: {
         id: req.params.id
       }
-    }).then(function(dbGraph) {
-      res.json(dbGraph);
+    }).then(function(dbgraph) {
+      res.json(dbgraph);
     });
   });
 };

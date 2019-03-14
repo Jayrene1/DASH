@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-	var Graph = sequelize.define('Graph', {
+	var graph = sequelize.define('graph', {
 		graph_name: {
 			type: DataTypes.STRING(24),
 			allowNull: false
@@ -10,9 +10,9 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	});
 
-	Graph.associate = function(models) {
+	graph.associate = function(models) {
 
-		Graph.belongsTo(models.Dashboard, {
+		graph.belongsTo(models.dashboard, {
 		  foreignKey: {
 			allowNull: false
 		  }
@@ -20,5 +20,5 @@ module.exports = function(sequelize, DataTypes) {
 
 	};
 
-	return Graph;
+	return graph;
 };

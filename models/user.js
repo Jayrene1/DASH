@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-	var User = sequelize.define('User', {
+	var user = sequelize.define('user', {
 		username: {
 			type: DataTypes.STRING(48),
 			allowNull: false
@@ -14,14 +14,14 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	});
 
-	User.associate = function(models) {
-		User.hasMany(models.Dataset, {
+	user.associate = function(models) {
+		user.hasMany(models.dataset, {
 				onDelete: "cascade"
 			});
-		User.hasMany(models.Dashboard, {
+		user.hasMany(models.dashboard, {
 			onDelete: "cascade"
 		});
 	};
 
-	return User;
+	return user;
 };

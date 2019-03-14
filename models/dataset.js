@@ -1,17 +1,17 @@
 module.exports = function(sequelize, DataTypes) {
-	var Dataset = sequelize.define('Dataset', {
+	var dataset = sequelize.define('dataset', {
 		json_data: {
 			type: DataTypes.JSON,
 			allowNull: false
 		}
 	});
 
-	Dataset.associate = function(models) {
-		Dataset.belongsTo(models.User, {
+	dataset.associate = function(models) {
+		dataset.belongsTo(models.user, {
 			foreignKey: {
 				allowNull: false
 			  }
 		  });
 	  };
-	return Dataset;
+	return dataset;
   };

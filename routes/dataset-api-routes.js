@@ -4,55 +4,54 @@ module.exports = function(app) {
 
   app.get("/api/datasets/", function(req, res) {
     var query = {};
-    console.log(req.query);
     if (req.query.id) {
       query.id = req.query.id;
     }
-    db.Dataset.findAll({
+    db.dataset.findAll({
       where: query,
-      include: [db.User]
-    }).then(function(dbDataset) {
-      res.json(dbDataset);
+      include: [db.user] 
+    }).then(function(dbdataset) {
+      res.json(dbdataset);
     });
   });
 
   app.get("/api/datasets/:id", function(req, res) {
-    // Find one Dataset with the id in req.params.id and return them to the Dataset with res.json
-    db.Dataset.findOne({
+    // Find one dataset with the id in req.params.id and return them to the dataset with res.json
+    db.dataset.findOne({
       where: {
         id: req.params.id
       }
-    }).then(function(dbDataset) {
-      res.json(dbDataset);
+    }).then(function(dbdataset) {
+      res.json(dbdataset);
     });
   });
 
   app.post("/api/datasets", function(req, res) {
-    db.Dataset.create(req.body).then(function(dbDatasets) {
-      res.json(dbDatasets);
+    db.dataset.create(req.body).then(function(dbdatasets) {
+      res.json(dbdatasets);
     });
   });
 
   app.delete("/api/datasets/:id", function(req, res) {
-    // Delete the Dataset with the id available to us in req.params.id
-    db.Dataset.destroy({
+    // Delete the dataset with the id available to us in req.params.id
+    db.dataset.destroy({
       where: {
         id: req.params.id
       }
-    }).then(function(dbDataset) {
-      res.json(dbDataset);
+    }).then(function(dbdataset) {
+      res.json(dbdataset);
     });
   });
 
   app.put("/api/datasets/:id", function(req, res) {
-    db.Post.update(
+    db.dataset.update(
       req.body,
       {
         where: {
           id: req.body.id
         }
-      }).then(function(dbPost) {
-      res.json(dbPost);
+      }).then(function(data) {
+      res.json(data);
     });
   });
 };

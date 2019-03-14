@@ -1,21 +1,21 @@
 module.exports = function(sequelize, DataTypes) {
-	var Dashboard = sequelize.define('Dashboard', {
+	var dashboard = sequelize.define('dashboard', {
 		dash_name: {
 			type: DataTypes.STRING(64),
 			allowNull: false
 		}
 	});
 
-	Dashboard.associate = function(models) {
-		Dashboard.belongsTo(models.User, {
+	dashboard.associate = function(models) {
+		dashboard.belongsTo(models.user, {
 			foreignKey: {
 				allowNull: false
 			  }
 		});
 
-		Dashboard.hasMany(models.Graph, {
+		dashboard.hasMany(models.graph, {
 				onDelete: "cascade"
 		});
 	};
-	return Dashboard;
+	return dashboard;
 };
