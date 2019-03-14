@@ -1,6 +1,5 @@
 $(document).ready(function() {
-    var userId = localStorage.getItem('userID');
-    var datasetID = 2; // TODO set to user's dataset by checking the user model in sql
+    datasetID = 2; // TODO set to user's dataset by checking the user model in sql
     var json;
     function getDataset() {
         $.get("/api/datasets/" + datasetID, function(data) {
