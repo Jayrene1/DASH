@@ -7,7 +7,9 @@ module.exports = function(sequelize, DataTypes) {
 	});
 
 	dataset.associate = function(models) {
-		dataset.belongsTo(models.user);
+		dataset.belongsTo(models.user, {
+			foreignKey: 'username'
+		  });
 	  };
 	return dataset;
   };
