@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
 	var Dashboard = sequelize.define('Dashboard', {
 		dash_name: {
-			type: DataTypes.STRING,
+			type: DataTypes.STRING(64),
 			allowNull: false
 		}
 	});
