@@ -3,8 +3,7 @@ module.exports = function(sequelize, DataTypes) {
 		json_data: {
 			type: DataTypes.JSON,
 			allowNull: false
-		},
-		
+		}
 	});
 
 	Dataset.associate = function(models) {
@@ -13,6 +12,6 @@ module.exports = function(sequelize, DataTypes) {
 				allowNull: false
 			  }
 		  });
-	  }
+	  };
 	return Dataset;
   };

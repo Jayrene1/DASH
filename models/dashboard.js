@@ -11,11 +11,11 @@ module.exports = function(sequelize, DataTypes) {
 			foreignKey: {
 				allowNull: false
 			  }
-			});
+		});
 
 		Dashboard.hasMany(models.Graph, {
 				onDelete: "cascade"
 		});
-	}
+	};
 	return Dashboard;
 };
