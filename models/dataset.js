@@ -4,23 +4,18 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.JSON,
 			allowNull: false
 		},
-		user_id: {
+		user_id1: {
 			type: DataTypes.INTEGER,
 			references: {
 				model: sequelize.models.user,
 				key: 'id'
 			}
 		}
-	},
-	 {
-		underscored: true
 	});
 
 	dataset.associate = function(models) {
 		dataset.belongsTo(models.user, {
-			foreignKey: {
-				allowNull: false
-			  }
+			foreignKey: 'user_id1'
 		  });
 	  };
 	return dataset;
