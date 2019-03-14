@@ -21,6 +21,7 @@ app.set("view engine", "handlebars");
 // =============================================================
 require("./routes/user-api-routes.js")(app);
 require("./routes/dataset-api-routes.js")(app);
+require("./routes/dashboard-api-routes.js")(app);
 require("./routes/graph-api-routes.js")(app);
 require("./routes/html-routes.js")(app);
 
