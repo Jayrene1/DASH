@@ -4,11 +4,15 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.JSON,
 			allowNull: false
 		}
+	}, {
+		underscored: true
 	});
 
 	dataset.associate = function(models) {
 		dataset.belongsTo(models.user, {
-			foreignKey: 'username'
+			foreignKey: {
+				allowNull: false
+			  }
 		  });
 	  };
 	return dataset;

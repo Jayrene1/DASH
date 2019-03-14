@@ -12,7 +12,9 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(24),
 			allowNull: false
 		}
-	});
+	}, {
+		underscored: true
+	  });
 
 	user.associate = function(models) {
 		user.hasMany(models.dataset, {

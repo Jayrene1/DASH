@@ -204,7 +204,7 @@ function submitDataset(parsedData, headers) {
     };
     var dataset = {
         json_data: json,
-        userId: parseInt(UserID)
+        user_id: parseInt(UserID)
     };
   $.post("/api/datasets", dataset, function() {
         var trow = $("<tr>");
@@ -227,7 +227,7 @@ function cloneDataset(set) {
     console.log(datasets);
     var dataset = {
         json_data: set["json_data"],
-        userId: set["UserId"]
+        user_id: set["UserId"]
     };
   $.post("/api/datasets", dataset, function() {
         var trow = $("<tr>");

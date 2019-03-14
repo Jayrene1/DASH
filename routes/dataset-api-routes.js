@@ -4,8 +4,8 @@ module.exports = function(app) {
 
   app.get("/api/datasets/", function(req, res) {
     var query = {};
-    if (req.query.id) {
-      query.id = req.query.id;
+    if (req.query.user_id) {
+      query.user_id = req.query.user_id;
     }
     db.dataset.findAll({
       where: query,
