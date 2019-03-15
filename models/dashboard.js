@@ -7,11 +7,11 @@ module.exports = function(sequelize, DataTypes) {
 	});
 
 	dashboard.associate = function(models) {
-		// dashboard.belongsTo(models.user, {
-		// 	foreignKey: {
-		// 		allowNull: false
-		// 	  }
-		// });
+		dashboard.belongsTo(models.user, {
+			foreignKey: {
+				allowNull: false
+			  }
+		});
 
 		dashboard.hasMany(models.graph, {
 				onDelete: "cascade"
