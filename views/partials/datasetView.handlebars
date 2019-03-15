@@ -32,7 +32,7 @@ var datasets;
 
             var userId = user || "";
             if (userId) {
-                userId = "/?user_id1=" + userId;
+                userId = "/?source=" + userId;
             }
 
             $.get("/api/datasets" + userId, function(data) {

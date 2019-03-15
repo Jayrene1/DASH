@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.JSON,
 			allowNull: false
 		},
-		user_id1: {
+		source: {
 			type: DataTypes.INTEGER,
 			references: {
 				model: sequelize.models.user,
@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
 
 	dataset.associate = function(models) {
 		dataset.belongsTo(models.user, {
-			foreignKey: 'user_id1',
+			foreignKey: 'source',
 			constraints: false
 		  });
 	  };
